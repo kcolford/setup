@@ -1,0 +1,6 @@
+{% if encrypted_keyfile is defined %}umask o-r{% endif %}
+MODULES=()
+BINARIES=()
+FILES=({{ encrypted_keyfile|default('') }})
+HOOKS=(base systemd autodetect modconf block mdadm_udev keyboard sd-vconsole sd-encrypt sd-lvm2 filesystems fsck)
+COMPRESSION="gzip"

@@ -1,0 +1,61 @@
+---
+- shell: curl -L "$URL" | sed s/^#// | rankmirrors - > /etc/pacman.d/mirrorlist
+  environment:
+    URL: https://www.archlinux.org/mirrorlist/?country={{ country_code }}
+  tags:
+    - mirrorlist
+- copy: src=pacman.conf dest=/etc/pacman.conf
+- pacman: update_cache=yes upgrade=yes
+
+# setup basic files
+- copy: src=vconsole.conf dest=/etc/vconsole.conf
+- locale_gen: name={{ system_locale }}
+- locale_gen: name=en_US.UTF-8
+- template: src=locale.conf dest=/etc/locale.conf
+- file: src=/usr/share/zoneinfo/{{ system_timezone }} dest=/etc/localtime state=link
+
+# some customizations
+- copy: src=paccache.hook dest=/etc/pacman.d/hooks/paccache.hook
+- copy: src=umask.sh dest=/etc/profile.d/umask.sh
+- lineinfile:
+    path: /etc/environment
+    line: TZ={{ system_timezone }}
+    regexp: ^TZ=
+
+- pacman:
+    name:
+      - grub
+      - smartmontools
+      - cronie
+      - pacserve
+
+- service: name={{ item }} enabled=yes state=started
+  loop:
+    - smartd
+    - cronie
+    - fstrim.timer
+    - pacserve
+
+- crypttab:
+    path: /etc/crypttab.initramfs
+    name: root
+    backing_device: '{{ root_partition }}'
+    state: present
+    opts: discard
+    password: '{{ encrypted_keyfile|default("none") }}'
+  when: encrypted_root
+  notify:
+    - refresh mkinitcpio
+- shell: chmod o-r /boot/initramfs-*.img
+  when: encrypted_root and encrypted_keyfile is defined
+- template: src=mkinitcpio.conf.j2 dest=/etc/mkinitcpio.conf
+  notify:
+    - refresh mkinitcpio
+- lineinfile:
+    path: /etc/default/grub
+    line: GRUB_ENABLE_CRYPTODISK=y
+    regexp: GRUB_ENABLE_CRYPTODISK=
+  when: encrypted_root and encrypted_keyfile is defined
+  notify:
+    - install grub
+

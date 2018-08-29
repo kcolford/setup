@@ -1,0 +1,9 @@
+---
+- name: refresh mkinitcpio
+  command: mkinitcpio -P
+
+- name: install grub
+  command: grub-install --recheck {{ boot_device }}
+
+- name: refresh grub
+  command: grub-mkconfig -o /boot/grub/grub.cfg

@@ -1,0 +1,3 @@
+---
+- pacman: name=openssh
+- service: name=sshd enable=yes state=started

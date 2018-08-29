@@ -1,0 +1,66 @@
+---
+- user: name={{ user_name }} groups=wheel
+- copy:
+    src: home/
+    dest: /home/{{ user_name }}/
+    force: yes
+    owner: '{{ user_name }}'
+    group: '{{ user_name }}'
+    chown: preserve
+- file:
+    path: /home/{{ user_name }}/.local/share/libvirt/images
+    attributes: +C
+    state: directory
+    owner: '{{ user_name }}'
+    group: '{{ user_name }}'
+- pacman:
+    name:
+      - base
+      - linux-zen
+      - linux-zen-headers
+      - base-devel
+      - bash-completion
+      - pacman-contrib
+      - moreutils
+      - mlocate
+      - ripgrep
+      - git
+      - sshfs
+      - openssh
+      - pkgfile
+      - ccid
+      - hub
+      - thefuck
+      - watchman
+      - udiskie
+      - python
+      - python-pip
+      - nodejs
+      - npm
+      - go
+      - rust
+      - cmake
+      - clang
+
+      - emacs
+      - xclip
+      - shellcheck
+      - aspell
+      - aspell-en
+      - go-tools
+      - flake8
+      - autopep8
+      - yapf
+      - ipython
+      - python-jedi
+      - python-rope
+      - python-virtualenv
+      - prettier
+      - bear
+      - gocode-git
+
+
+- service: name={{ item }} enabled=yes state=started
+  loop:
+    - pcscd
+    - updatedb.timer

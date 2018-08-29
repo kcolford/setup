@@ -1,0 +1,49 @@
+[http]
+	cookiefile = ~/.gitcookies
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[push]
+	recurseSubmodules = on-demand
+	followTags = true
+[alias]
+	pushu = push -u origin HEAD
+	up = fetch --all
+	easy-commit = !git commit -m \"$(curl whatthecommit.com/index.txt)\"
+	git = !git
+[url "git://git.kernel.org/pub/scm/linux/kernel/git/"]
+	insteadOf = "kern:"
+[url "https://github.com/"]
+	insteadOf = "gh:"
+[url "git@github.com:"]
+	pushInsteadOf = "https://github.com/"
+	pushInsteadOf = "gh:"
+[url "git@gitlab.com:"]
+	pushInsteadOf = "https://gitlab.com/"
+[url "https://aur.archlinux.org/"]
+	insteadOf = "aur:"
+[url "aur@aur.archlinux.org:"]
+	pushInsteadOf = "https://aur.archlinux.org/"
+	pushInsteadof = "aur:"
+[url "git://git.sv.gnu.org/"]
+	insteadOf = "gnu:"
+[url "git://anongit.freedesktop.org/"]
+	insteadOf = "freedesktop:"
+[merge]
+	tool = emacsclient
+[mergetool "emacsclient"]
+	cmd = emacsclient -t --eval \"(emacsclient-mergetool \\\"$LOCAL\\\" \\\"$REMOTE\\\" \\\"$BASE\\\" \\\"$OUTPUT\\\"
+	trustExitCode = true
+[user]
+	email = kieran@kcolford.com
+	name = Kieran Colford
+[core]
+	fsmonitor = /usr/share/git-core/templates/hooks/fsmonitor-watchman.sample
+[diff]
+	colorMoved = plain
+[help]
+	autocorrect = 1
+[rerere]
+	autoupdate = true

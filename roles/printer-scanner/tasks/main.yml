@@ -1,0 +1,12 @@
+---
+- pacman:
+    name:
+      - cups
+      - ghostscript
+      - foomatic-db
+      - sane
+- lineinfile:
+    path: /etc/cups/cups-files.conf
+    regexp: ^SystemGroup
+    line: SystemGroup sys root wheel
+- service: name=org.cups.cupsd enabled=yes state=started

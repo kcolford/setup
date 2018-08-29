@@ -1,0 +1,12 @@
+---
+- pacman:
+    name: postgresql
+- command: chattr +C /var/lib/postgres/data/
+  when: filesystem == "btrfs"
+- command: initdb -A pam -D /var/lib/postgres/data/
+  become_user: postgres
+- service:
+    name: postgresql
+    enabled: yes
+    state: started
+

@@ -1,0 +1,19 @@
+---
+- pacman:
+    name:
+      - chrony
+      - tlp
+      - networkmanager
+- service: name={{ item }} enabled=yes state=started
+  loop:
+    - chronyd
+    - tlp
+    - NetworkManager
+
+- service: name=tlp-sleep enabled=yes
+- systemd: name=systemd-rfkill.service masked=yes
+- systemd: name=systemd-rfkill.socket masked=yes
+
+# - systemd: name=NetworkManager.service masked=yes
+#   when: not use_network_manager
+
