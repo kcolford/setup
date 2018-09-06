@@ -1,0 +1,7 @@
+---
+- name: add multilib repos to pacman.conf
+  blockinfile:
+    path: /etc/pacman.conf
+    block: |
+      [multilib]
+      Include = /etc/pacman.d/mirrorlist

@@ -1,0 +1,6 @@
+#!/bin/sh
+
+export PAGER=less
+export LESS=FRSXi
+export EDITOR="${EDITOR:-nano}"
+export TEXEDIT="${VISUAL:-$EDITOR} +%d %s"

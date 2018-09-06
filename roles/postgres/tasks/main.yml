@@ -1,10 +1,14 @@
 ---
-- pacman:
-    name: postgresql
-- command: chattr +C /var/lib/postgres/data/
-  when: filesystem == "btrfs"
-- command: initdb -A pam -D /var/lib/postgres/data/
+- name: install postgres
+  package: name=postgresql state=present
+- name: set postgres directory to nocow
+  file: path={{ postgres_data_directory }} attributes=+C
+- name: initialize database directory
+  command: initdb -A pam -D /var/lib/postgres/data/
   become_user: postgres
+  become: yes
+  args:
+    create:
 - service:
     name: postgresql
     enabled: yes

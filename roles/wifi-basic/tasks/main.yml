@@ -1,0 +1,6 @@
+---
+- name: install wireless packages
+  package: name={{ item }}
+  loop:
+    - crda
+    - 

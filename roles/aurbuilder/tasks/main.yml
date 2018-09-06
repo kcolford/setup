@@ -1,0 +1,6 @@
+---
+- name: add aur builder user
+  user:
+    name: aurbuilder
+    system: yes
+    home: /var/lib/aurbuilder/

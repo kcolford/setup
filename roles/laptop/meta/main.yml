@@ -1,5 +1,0 @@
----
-dependencies:
-  - role: graphical
-  - role: user
-  - role: common

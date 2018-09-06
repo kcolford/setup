@@ -1,0 +1,8 @@
+---
+- hosts: localhost
+  roles:
+    - common
+    - user
+    - graphical
+    - laptop
+    - printer-scanner

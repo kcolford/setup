@@ -1,18 +1,25 @@
 ---
-- pacman:
-    name:
-      - chrony
-      - tlp
-      - networkmanager
-- service: name={{ item }} enabled=yes state=started
+- name: install laptop services
+  package: name={{ item }}
+  loop:
+    - chrony
+    - tlp
+    - networkmanager
+- name: start laptop services
+  service: name={{ item }} enabled=yes state=started
   loop:
     - chronyd
     - tlp
     - NetworkManager
 
-- service: name=tlp-sleep enabled=yes
-- systemd: name=systemd-rfkill.service masked=yes
-- systemd: name=systemd-rfkill.socket masked=yes
+- name: enable tlp-sleep
+  service: name=tlp-sleep enabled=yes
+  
+- name: disable systemd-rfkill service
+  systemd: name=systemd-rfkill.service masked=yes
+
+- name: disable systemd-rfkill socket
+  systemd: name=systemd-rfkill.socket masked=yes
 
 # - systemd: name=NetworkManager.service masked=yes
 #   when: not use_network_manager

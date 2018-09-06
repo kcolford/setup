@@ -1,0 +1,4 @@
+---
+- name: reload print service
+  service: name=org.cups.cupsd state=reloaded
+

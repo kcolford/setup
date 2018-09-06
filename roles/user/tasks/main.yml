@@ -1,66 +1,100 @@
 ---
-- user: name={{ user_name }} groups=wheel
-- copy:
-    src: home/
-    dest: /home/{{ user_name }}/
-    force: yes
-    owner: '{{ user_name }}'
-    group: '{{ user_name }}'
-    chown: preserve
-- file:
-    path: /home/{{ user_name }}/.local/share/libvirt/images
-    attributes: +C
-    state: directory
-    owner: '{{ user_name }}'
-    group: '{{ user_name }}'
-- pacman:
-    name:
-      - base
-      - linux-zen
-      - linux-zen-headers
-      - base-devel
-      - bash-completion
-      - pacman-contrib
-      - moreutils
-      - mlocate
-      - ripgrep
-      - git
-      - sshfs
-      - openssh
-      - pkgfile
-      - ccid
-      - hub
-      - thefuck
-      - watchman
-      - udiskie
-      - python
-      - python-pip
-      - nodejs
-      - npm
-      - go
-      - rust
-      - cmake
-      - clang
+- name: install user programs
+  package: name={{ item }}
+  loop:
+    - base
+    - base-devel
+    - linux-zen
+    - linux-zen-headers
+    - base-devel
+    - bash-completion
+    - pacman-contrib
+    - moreutils
+    - mlocate
+    - ripgrep
+    - git
+    - sshfs
+    - openssh
+    - pkgfile
+    - ccid
+    - hub
+    - thefuck
+    - watchman
+    - udiskie
+    - python
+    - python-pip
+    - nodejs
+    - npm
+    - go
+    - rust
+    - cmake
+    - clang
 
-      - emacs
-      - xclip
-      - shellcheck
-      - aspell
-      - aspell-en
-      - go-tools
-      - flake8
-      - autopep8
-      - yapf
-      - ipython
-      - python-jedi
-      - python-rope
-      - python-virtualenv
-      - prettier
-      - bear
-      - gocode-git
+    - emacs
+    - xclip
+    - shellcheck
+    - aspell
+    - aspell-en
+    - go-tools
+    - flake8
+    - autopep8
+    - yapf
+    - ipython
+    - python-jedi
+    - python-rope
+    - python-virtualenv
+    - prettier
+    # - bear
+    # - gocode-git
 
 
-- service: name={{ item }} enabled=yes state=started
+- name: enable user services
+  service: name={{ item }} enabled=yes state=started
   loop:
     - pcscd
     - updatedb.timer
+
+- name: configure sudo
+  copy:
+    src: sudo_config
+    dest: /etc/sudoers.d/
+    mode: 0440
+    validate: /usr/sbin/visudo -cf %s
+  become: yes
+
+
+- name: create admin user
+  user: name={{ user_name }} groups=wheel
+  register: admin
+
+- name: set admin user password
+  user: name={{ user_name }} password={{ user_password|password_hash('sha512') }}
+  when: user_password is defined
+
+- name: lock root account
+  user: name=root password_lock=yes
+
+- name: install dotfiles
+  copy:
+    src: home/
+    dest: "{{ admin.home }}/"
+    owner: '{{ admin.name }}'
+    group: '{{ admin.name }}'
+    force: yes
+    mode: preserve
+    
+- name: mark libvirt virtual machine directory as nocow
+  file:
+    path: "{{ admin.home }}/.local/share/libvirt/images"
+    attributes: +C
+    state: directory
+    owner: '{{ admin.name }}'
+    group: '{{ admin.name }}'
+    
+- name: mark virtualbox virtual machine directory as nocow
+  file:
+    path: '{{ admin.home }}/VirtualBox VMs/'
+    attributes: +C
+    state: directory
+    owner: '{{ admin.name }}'
+    group: '{{ admin.name }}'

@@ -9,4 +9,7 @@
     path: /etc/cups/cups-files.conf
     regexp: ^SystemGroup
     line: SystemGroup sys root wheel
+  become: yes
+  notify:
+    - reload print service
 - service: name=org.cups.cupsd enabled=yes state=started
