@@ -1,16 +1,9 @@
 ---
-- name: install laptop services
-  package: name={{ item }}
-  loop:
-    - chrony
-    - tlp
-    - networkmanager
-- name: start laptop services
-  service: name={{ item }} enabled=yes state=started
-  loop:
-    - chronyd
-    - tlp
-    - NetworkManager
+- name: install power saver
+  package: name=tlp state=present
+
+- name: start power saver
+  service: name=tlp enabled=yes state=started
 
 - name: enable tlp-sleep
   service: name=tlp-sleep enabled=yes

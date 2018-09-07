@@ -1,6 +1,6 @@
 ---
 - name: install graphical programs
-  package: name={{ item }}
+  package: name={{ item }} state=present
   loop:
     - lightdm
     - lightdm-gtk-greeter

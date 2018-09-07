@@ -1,19 +1,36 @@
 ---
-- name: refresh mirrorlist
-  command: reflector --save /etc/pacman.d/mirrorlist --sort rate --fastest 5 --country {{ country_code }}
-
-- name: setup virtual console
-  copy: src=vconsole.conf dest=/etc/
+- name: set console keymap
+  command: localectl set-keymap emacs
 
 - name: setup system locale
   locale_gen: name={{ system_locale }}
 
-- name: set system locale
-  template: src=locale.conf.j2 dest=/etc/locale.conf
+- name: set locale
+  command: localectl set-locale {{ system_locale }}
+
+- name: set X11 keymap
+  command: localectl set-x11-keymap us
+
+- name: set console font
+  lineinfile:
+    path: /etc/vconsole.conf
+    line: FONT=Lat2-Terminus16
+    regexp: ^FONT
 
 - name: set timezone
-  file: src=/usr/share/zoneinfo/{{ system_timezone }} dest=/etc/localtime state=link
+  command: timedatectl set-timezone {{ system_timezone }}
+
+- name: install reflector for mirrorlist updates
+  package: name=reflector state=present
       
+- name: refresh mirrorlist
+  command: reflector --save /etc/pacman.d/mirrorlist --sort rate --fastest 5 --country {{ country_code }}
+
+- name: update system
+  pacman:
+    update_cache: yes
+    upgrade: yes
+
 - name: install intel microcode
   package: name=intel-ucode state=present
   when: "'GenuineIntel' in ansible_processor"
@@ -24,13 +41,10 @@
   copy: src=paccache.hook dest=/etc/pacman.d/hooks/
 
 - name: relax umask
-  copy: src=umask.sh dest=/etc/profile.d/umask.sh
-
-- name: speed up timezone checking
   lineinfile:
-    path: /etc/environment
-    line: TZ={{ system_timezone }}
-    regexp: ^TZ=
+    path: /etc/profile
+    line: umask 002
+    regexp: ^umask
 
 - name: automatically trim the system
   service: name=fstrim.timer enabled=yes state=started
@@ -43,22 +57,7 @@
   notify:
     - rebuild initramfs
 
-- name: update system
-  pacman:
-    update_cache: yes
-    upgrade: yes
-
-- name: install basic services
-  package: name={{ item }}
-  loop:
-    - smartmontools
-    - cronie
-    - pacserve
-
-- name: start basic services
-  service: name={{ item }} enabled=yes state=started
-  loop:
-    - smartd
-    - cronie
-    - pacserve
-
+- name: install grub bootloader
+  package: name=grub state=present
+  notify:
+    - update bootloader config

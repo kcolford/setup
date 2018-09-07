@@ -1,0 +1,13 @@
+---
+- name: set the repo architecture
+  set_fact: xyne_architecture={{ ansible_architecture }}
+  when: ansible_architecture in ['x86_64']
+  
+- name: configure support for xyne repo
+  blockinfile:
+    path: /etc/pacman.conf
+    block: |
+      [xyne-{{ xyne_architecture|default("any") }}]
+      SigLevel = Required
+      Server = https://xyne.archlinux.ca/repos/xyne
+      

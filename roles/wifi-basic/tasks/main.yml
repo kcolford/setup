@@ -1,6 +1,9 @@
 ---
 - name: install wireless packages
-  package: name={{ item }}
+  package: name={{ item }} state=present
   loop:
-    - crda
-    - 
+    - networkmanager
+    - network-manager-applet
+
+- name: start network manager
+  service: name=NetworkManager enabled=yes state=started

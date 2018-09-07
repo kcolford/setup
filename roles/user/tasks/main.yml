@@ -1,6 +1,6 @@
 ---
 - name: install user programs
-  package: name={{ item }}
+  package: name={{ item }} state=present
   loop:
     - base
     - base-devel
