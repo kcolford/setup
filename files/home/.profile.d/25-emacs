@@ -1,5 +1,0 @@
-#!/bin/sh
-
-export ALTERNATE_EDITOR="emacs"
-export VISUAL="emacsclient -c"
-export EDITOR="emacsclient -nw"
