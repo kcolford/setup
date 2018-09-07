@@ -1,6 +1,0 @@
-{% if encrypted_boot %}umask o-r{% endif %}
-MODULES=()
-BINARIES=()
-FILES=({% if encrypted_boot %}{{ encrypted_keyfile }}{% endif %})
-HOOKS=(base systemd autodetect modconf block mdadm_udev keyboard sd-vconsole sd-encrypt sd-lvm2 filesystems fsck)
-COMPRESSION="gzip"
