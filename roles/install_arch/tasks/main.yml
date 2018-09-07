@@ -11,28 +11,30 @@
 - name: install parted
   package: name=parted
 
-- name: create data partition with room for esp
-  parted:
-    device: "{{ os_disk }}"
-    number: 1
-    state: present
-    part_end: -1GiB
-  when: has_efi or not encrypted_boot
+- name: create msdos disk label
+  parted: device={{ os_disk }} label=msdos
+  when: not has_efi
+
+- name: create gpt disk label
+  parted: device={{ os_disk }} label=gpt
+  when: has_efi
+
+- name: create boot partition
+  parted: device={{ os_disk }} number=1 state=present part_end=1GiB
+
+- name: set boot partition as esp
+  parted: device={{ os_disk }} number=1 state=present flags=esp
+  when: has_efi
 
 - name: create data partition
-  parted:
-    device: "{{ os_disk }}"
-    number: 1
-    state: present
-  when: not has_efi and encrypted_boot
+  parted: device={{ os_disk }} number=2 state=present part_start=1GiB
 
-- name: create esp
-  parted:
-    device: "{{ os_disk }}"
-    state: present
-    number: 2
-    part_start: -1GiB
-    flags: [ esp, boot ]
+- name: create keyfile for encryption
+  shell: head -c 4096 /dev/random > /dev/shm/keyfile
+  args: creates=/dev/shm/keyfile
 
-- name: add filesystem and more
-  
+- name: setup encrypted disk
+  command: cryptsetup luksFormat {{ os_disk_second_partition }} /dev/shm/keyfile
+  when: encrypted_data
+
+# TODO

@@ -1,8 +1,12 @@
 ---
-- hosts: localhost
+- hosts: all
   roles:
     - common
+
+- hosts: laptops
+  roles:
     - user
     - graphical
     - laptop
     - printer-scanner
+

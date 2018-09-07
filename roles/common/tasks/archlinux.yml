@@ -1,0 +1,64 @@
+---
+- name: refresh mirrorlist
+  command: reflector --save /etc/pacman.d/mirrorlist --sort rate --fastest 5 --country {{ country_code }}
+
+- name: setup virtual console
+  copy: src=vconsole.conf dest=/etc/
+
+- name: setup system locale
+  locale_gen: name={{ system_locale }}
+
+- name: set system locale
+  template: src=locale.conf.j2 dest=/etc/locale.conf
+
+- name: set timezone
+  file: src=/usr/share/zoneinfo/{{ system_timezone }} dest=/etc/localtime state=link
+      
+- name: install intel microcode
+  package: name=intel-ucode state=present
+  when: "'GenuineIntel' in ansible_processor"
+  notify:
+    - update bootloader config
+
+- name: automatically clean up the pacman cache
+  copy: src=paccache.hook dest=/etc/pacman.d/hooks/
+
+- name: relax umask
+  copy: src=umask.sh dest=/etc/profile.d/umask.sh
+
+- name: speed up timezone checking
+  lineinfile:
+    path: /etc/environment
+    line: TZ={{ system_timezone }}
+    regexp: ^TZ=
+
+- name: automatically trim the system
+  service: name=fstrim.timer enabled=yes state=started
+
+- name: use systemd for initramfs
+  lineinfile:
+    path: /etc/mkinitcpio.conf
+    line: HOOKS=(systemd autodetect sd-vconsole sd-encrypt sd-lvm2 modconf block keyboard filesystems)
+    regexp: ^HOOKS
+  notify:
+    - rebuild initramfs
+
+- name: update system
+  pacman:
+    update_cache: yes
+    upgrade: yes
+
+- name: install basic services
+  package: name={{ item }}
+  loop:
+    - smartmontools
+    - cronie
+    - pacserve
+
+- name: start basic services
+  service: name={{ item }} enabled=yes state=started
+  loop:
+    - smartd
+    - cronie
+    - pacserve
+
