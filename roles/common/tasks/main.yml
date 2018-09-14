@@ -1,5 +1,96 @@
 ---
-- name: perform basic tasks for archlinux hosts
-  include_tasks: ./archlinux.yml
-  when: ansible_distribution == 'Archlinux'
+- name: set console keymap
+  command: localectl set-keymap emacs creates=/etc/vconsole.conf
 
+- name: setup system locale
+  locale_gen: name={{ system_locale }}
+
+- name: set locale
+  command: localectl set-locale LANG={{ system_locale }} creates=/etc/locale.conf
+
+- name: set X11 keymap
+  command: localectl set-x11-keymap us '' '' ctrl:swapcaps creates=/etc/X11/xorg.conf.d/00-keyboard.conf
+
+- name: set console font
+  lineinfile:
+    path: /etc/vconsole.conf
+    line: FONT=Lat2-Terminus16
+    regexp: ^FONT
+
+- name: set timezone
+  command: timedatectl set-timezone {{ system_timezone }} creates=/etc/localtime
+
+- name: install reflector for mirrorlist updates
+  package: name=reflector state=present
+      
+- name: refresh mirrorlist
+  command: reflector --save /etc/pacman.d/mirrorlist --sort rate --fastest 5 --country {{ country_code }}
+
+- name: automatically clean up the pacman cache
+  copy: src=paccache.hook dest=/etc/pacman.d/hooks/
+
+- name: initialize pacman keyring
+  command: pacman-key --init creates=/etc/pacman.d/gnupg
+
+- name: populate with standard package keys
+  command: pacman-key --populate archlinux
+
+- name: update system
+  pacman:
+    update_cache: yes
+    upgrade: yes
+
+- name: install intel microcode
+  package: name=intel-ucode state=present
+  when: "'GenuineIntel' in ansible_processor"
+  notify: update bootloader config
+
+- name: relax umask
+  lineinfile:
+    path: /etc/profile
+    line: umask 002
+    regexp: ^umask 022
+
+- name: automatically trim the system
+  service: name=fstrim.timer enabled=yes state=started
+
+- name: setup initramfs
+  lineinfile:
+    path: /etc/mkinitcpio.conf
+    line: HOOKS=(systemd autodetect sd-vconsole sd-encrypt sd-lvm2 modconf block keyboard filesystems)
+    regexp: ^HOOKS
+  notify: rebuild initramfs
+
+- name: set options for btrfs mounts
+  mount:
+    fstype: '{{ item.fstype }}'
+    opts: autodefrag,user_subvol_rm_allowed
+    path: '{{ item.mount }}'
+    src: UUID={{ item.uuid }}
+    state: present
+  when: item.fstype == 'btrfs'
+  loop: '{{ ansible_mounts }}'
+
+- name: add devices to crypttab
+  crypttab:
+    name: '{{ item.name }}'
+    state: present
+    backing_device: '{{ item.dep }}'
+    opts: discard
+  when: "'/dev/mapper/luks-' in item.name"
+
+- name: install grub bootloader
+  package: name=grub state=present
+  notify: update bootloader config
+
+- name: fetch kernel command line
+  command: cat /etc/cmdline
+  register: cmdline
+
+- name: store kernel command line in grub config
+  lineinfile:
+    path: /etc/default/grub
+    line: GRUB_CMDLINE_LINUX="{{ cmdline.stdout }}"
+    regexp: ^GRUB_CMDLINE_LINUX=
+  notify: install bootloader to disk
+  when: ansible_architecture == 'x86_64'
