@@ -7,7 +7,9 @@
   roles:
     - user
     - graphical
-    - laptop
+    - battery-saver
+    - wifi-basic
+    - office
     - printer-scanner
     - xyne-repo
     - pacserve

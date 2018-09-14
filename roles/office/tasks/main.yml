@@ -1,0 +1,6 @@
+---
+- name: install suite of office software
+  package: name={{ item }} state=present
+  loop:
+    - texlive-most
+    - libreoffice-fresh
