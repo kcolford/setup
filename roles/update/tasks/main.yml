@@ -1,0 +1,5 @@
+---
+- name: perform pacman update
+  pacman: update_cache=yes upgrade=yes
+  when: ansible_distribution == "Archlinux"
+

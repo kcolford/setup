@@ -30,19 +30,16 @@
   copy: src=paccache.hook dest=/etc/pacman.d/hooks/
 
 - name: initialize pacman keyring
-  command: pacman-key --init creates=/etc/pacman.d/gnupg
+  command: pacman-key --init creates=/etc/pacman.d/gnupg/
 
 - name: populate with standard package keys
   command: pacman-key --populate archlinux
 
-- name: update system
-  pacman:
-    update_cache: yes
-    upgrade: yes
-
 - name: install intel microcode
   package: name=intel-ucode state=present
-  when: "'GenuineIntel' in ansible_processor"
+  when:
+    - "'GenuineIntel' in ansible_processor"
+    - ansible_distribution == 'Archlinux'
   notify: update bootloader config
 
 - name: relax umask
@@ -53,6 +50,10 @@
 
 - name: automatically trim the system
   service: name=fstrim.timer enabled=yes state=started
+
+- name: install btrfs programs
+  package: name=btrfs-progs state=present
+  when: btrfs_in_use
 
 - name: setup initramfs
   lineinfile:
@@ -71,26 +72,14 @@
   when: item.fstype == 'btrfs'
   loop: '{{ ansible_mounts }}'
 
-- name: add devices to crypttab
-  crypttab:
-    name: '{{ item.name }}'
-    state: present
-    backing_device: '{{ item.dep }}'
-    opts: discard
-  when: "'/dev/mapper/luks-' in item.name"
-
 - name: install grub bootloader
   package: name=grub state=present
   notify: update bootloader config
 
-- name: fetch kernel command line
-  command: cat /etc/cmdline
-  register: cmdline
-
 - name: store kernel command line in grub config
   lineinfile:
     path: /etc/default/grub
-    line: GRUB_CMDLINE_LINUX="{{ cmdline.stdout }}"
+    line: GRUB_CMDLINE_LINUX=""
     regexp: ^GRUB_CMDLINE_LINUX=
   notify: install bootloader to disk
   when: ansible_architecture == 'x86_64'

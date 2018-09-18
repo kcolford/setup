@@ -3,6 +3,10 @@
   roles:
     - common
 
+- hosts: all:!archlinux
+  roles:
+    - update
+
 - hosts: laptops
   roles:
     - user

@@ -5,7 +5,7 @@
 
 - name: set the has_efi variable
   set_fact:
-    has_efi: {{ sys_firware_efi.exists }}
+    has_efi: '{{ sys_firware_efi.exists }}'
     cacheable: yes
 
 - name: install parted
