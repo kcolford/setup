@@ -9,7 +9,7 @@
   command: localectl set-locale LANG={{ system_locale }} creates=/etc/locale.conf
 
 - name: set X11 keymap
-  command: localectl set-x11-keymap us '' '' ctrl:swapcaps creates=/etc/X11/xorg.conf.d/00-keyboard.conf
+  command: localectl set-x11-keymap us '' '' ctrl:nocaps creates=/etc/X11/xorg.conf.d/00-keyboard.conf
 
 - name: set console font
   lineinfile:
@@ -37,16 +37,14 @@
 
 - name: install intel microcode
   package: name=intel-ucode state=present
-  when:
-    - "'GenuineIntel' in ansible_processor"
-    - ansible_distribution == 'Archlinux'
+  when: "'GenuineIntel' in ansible_processor"
   notify: update bootloader config
 
 - name: relax umask
   lineinfile:
     path: /etc/profile
     line: umask 002
-    regexp: ^umask 022
+    regexp: ^umask
 
 - name: automatically trim the system
   service: name=fstrim.timer enabled=yes state=started
@@ -58,7 +56,7 @@
 - name: setup initramfs
   lineinfile:
     path: /etc/mkinitcpio.conf
-    line: HOOKS=(systemd autodetect sd-vconsole sd-encrypt sd-lvm2 modconf block keyboard filesystems)
+    line: HOOKS=(systemd autodetect sd-vconsole sd-encrypt sd-lvm2 modconf block keyboard filesystems fsck)
     regexp: ^HOOKS
   notify: rebuild initramfs
 
