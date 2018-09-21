@@ -46,6 +46,7 @@
     state: directory
     owner: '{{ admin.name }}'
     group: '{{ admin.name }}'
+  when: false
     
 - name: mark virtualbox virtual machine directory as nocow
   file:
@@ -54,3 +55,5 @@
     state: directory
     owner: '{{ admin.name }}'
     group: '{{ admin.name }}'
+  when: false
+  
