@@ -7,6 +7,7 @@
     - syncthing-gtk
     - qbittorent
     - kdeconnect
+    - network-manager-applet
     - i3-gaps
     - i3blocks
     - i3lock
