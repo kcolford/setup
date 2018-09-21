@@ -1,6 +1,7 @@
 ---
 user_name: kieran
 default_password: password
+password_salt: '{{ inventory_hostname }}'
 package_list:
   - base
   - base-devel
