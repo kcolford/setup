@@ -20,7 +20,7 @@ package_list:
   - xdotool
   - dex
   - dmenu
-  - terminux-font
+  - terminus-font
   - arandr
   - redshift
   - python-xdg
