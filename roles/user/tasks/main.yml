@@ -49,7 +49,7 @@
 
 
 - name: enable user services
-  service: name={{ item }} enabled=yes state=started
+  service: name={{ item }} enabled=yes
   loop:
     - pcscd
     - updatedb.timer
