@@ -1,5 +1,6 @@
 system_locale: en_CA.UTF-8
 system_timezone: America/Toronto
+system_keymap: emacs
 country_code: CA
 laptop: no
 btrfs_in_use: yes
