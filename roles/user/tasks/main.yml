@@ -25,7 +25,7 @@
     groups: 
       - wheel
     update_password: on_create
-    password: '{{ user_password|default(default_password)|password_hash('sha512', 65534|random(seed=inventory_hostname)|string) }}'
+    password: "{{ user_password|default(default_password)|password_hash('sha512', 65534|random(seed=inventory_hostname)|string) }}"
   register: admin
     
 - name: lock root account
