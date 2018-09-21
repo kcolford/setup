@@ -3,7 +3,7 @@
   package: name=tlp state=present
 
 - name: start power saver
-  service: name=tlp enabled=yes state=started
+  service: name=tlp enabled=yes
 
 - name: enable tlp-sleep
   service: name=tlp-sleep enabled=yes
