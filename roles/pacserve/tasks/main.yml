@@ -1,6 +1,6 @@
 ---
 - name: install pacserve
-  package: name=pacserve,sponge state=present
+  package: name=pacserve,moreutils state=present
 
 - name: start pacserve
   service: name=pacserve enabled=yes
