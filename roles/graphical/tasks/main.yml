@@ -43,7 +43,7 @@
     dest: /etc/X11/xorg.conf.d/
     
 - name: start display manager
-  service: name=lightdm enabled=yes state=started
+  service: name=lightdm enabled=yes
 
 
       
