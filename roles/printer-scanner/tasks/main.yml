@@ -15,4 +15,4 @@
   notify:
     - reload print service
 - name: start the printing service
-  service: name=org.cups.cupsd enabled=yes state=started
+  service: name=org.cups.cupsd enabled=yes
