@@ -11,3 +11,6 @@
       SigLevel = Required
       Server = https://xyne.archlinux.ca/repos/xyne
       
+- name: pull down new repos
+  pacman:
+    update_cache: yes
