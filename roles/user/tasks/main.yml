@@ -20,13 +20,14 @@
 
 
 - name: create admin user
-  user: name={{ user_name }} groups=wheel
+  user:
+    name: '{{ user_name }}'
+    groups: 
+      - wheel
+    update_password: on_create
+    password: '{{ user_password|default(default_password)|password_hash('sha512', 65534|random(seed=inventory_hostname)|string) }}'
   register: admin
-
-- name: set admin user password
-  user: name={{ user_name }} password={{ user_password|password_hash('sha512') }}
-  when: user_password is defined
-
+    
 - name: lock root account
   user: name=root password_lock=yes
 
