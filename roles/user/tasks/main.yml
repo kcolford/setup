@@ -1,52 +1,8 @@
 ---
 - name: install user programs
-  pacman: name={{ item }} state=present
-    name:
-      - base
-      - base-devel
-      - linux-zen
-      - linux-zen-headers
-      - base-devel
-      - bash-completion
-      - pacman-contrib
-      - moreutils
-      - mlocate
-      - ripgrep
-      - git
-      - sshfs
-      - openssh
-      - pkgfile
-      - ccid
-      - hub
-      - thefuck
-      - watchman
-      - udiskie
-      - python
-      - python-pip
-      - nodejs
-      - npm
-      - go
-      - rust
-      - cmake
-      - clang
-
-      - emacs
-      - xclip
-      - shellcheck
-      - aspell
-      - aspell-en
-      - go-tools
-      - flake8
-      - autopep8
-      - yapf
-      - ipython
-      - python-jedi
-      - python-rope
-      - python-virtualenv
-      - prettier
-      # - bear
-      # - gocode-git
-
+  pacman:
+    state: present
+    name: '{{ package_list }}'
 
 - name: enable user services
   service: name={{ item }} enabled=yes
