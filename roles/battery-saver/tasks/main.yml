@@ -10,9 +10,11 @@
   
 - name: disable systemd-rfkill service
   systemd: name=systemd-rfkill.service masked=yes
+  ignore_errors: yes
 
 - name: disable systemd-rfkill socket
   systemd: name=systemd-rfkill.socket masked=yes
+  ignore_errors: yes
 
 # - systemd: name=NetworkManager.service masked=yes
 #   when: not use_network_manager
