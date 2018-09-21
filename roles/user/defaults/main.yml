@@ -1,5 +1,6 @@
 ---
 user_name: kieran
+default_password: password
 package_list:
   - base
   - base-devel
