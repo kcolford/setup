@@ -2,6 +2,7 @@
 package_list:
   - lightdm
   - lightdm-gtk-greeter
+  - accountsservice
   - syncthing-gtk
   - qbittorrent
   - kdeconnect
