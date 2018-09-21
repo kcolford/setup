@@ -3,13 +3,13 @@
   pacman:
     name: '{{ package_list }}'
 
-- name: set X11 keymap
-  command: localectl set-x11-keymap us '' '' ctrl:nocaps creates=/etc/X11/xorg.conf.d/00-keyboard.conf
-
 - name: configure natural scrolling
   copy:
-    src: 30-touchpad.conf
+    src: '{{ item }}'
     dest: /etc/X11/xorg.conf.d/
+  loop:
+    - 30-keyboard.conf
+    - 30-touchpad.conf
     
 - name: start display manager
   service: name=lightdm enabled=yes
