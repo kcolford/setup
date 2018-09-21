@@ -6,4 +6,4 @@
     - network-manager-applet
 
 - name: start network manager
-  service: name=NetworkManager enabled=yes state=started
+  service: name=NetworkManager enabled=yes
