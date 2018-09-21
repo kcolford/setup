@@ -3,7 +3,7 @@ package_list:
   - lightdm
   - lightdm-gtk-greeter
   - syncthing-gtk
-  - qbittorent
+  - qbittorrent
   - kdeconnect
   - network-manager-applet
   - i3-gaps
