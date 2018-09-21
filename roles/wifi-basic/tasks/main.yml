@@ -1,9 +1,6 @@
 ---
 - name: install wireless packages
-  package: name={{ item }} state=present
-  loop:
-    - networkmanager
-    - network-manager-applet
+  package: name=networkmanager state=present
 
 - name: start network manager
   service: name=NetworkManager enabled=yes
