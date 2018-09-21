@@ -18,6 +18,7 @@ package_list:
   - openssh
   - pkgfile
   - ccid
+  - libusb-compat
   - hub
   - thefuck
   # - watchman
