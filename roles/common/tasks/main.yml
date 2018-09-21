@@ -53,7 +53,7 @@
     regexp: ^umask
 
 - name: automatically trim the system
-  service: name=fstrim.timer enabled=yes state=enabled
+  service: name=fstrim.timer enabled=yes
 
 - name: install btrfs programs
   package: name=btrfs-progs state=present
