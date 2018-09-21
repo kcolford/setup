@@ -78,3 +78,6 @@
     regexp: ^GRUB_CMDLINE_LINUX=
   notify: install bootloader to disk
   when: ansible_architecture == 'x86_64'
+  
+- name: set local hostname
+  copy: dest=/etc/hostname content={{ inventory_hostname }}
