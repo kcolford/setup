@@ -1,0 +1,7 @@
+[Unit]
+Description=Run ansible-pull to update the system.
+
+[Service]
+EnvironmentFile=/etc/conf.d/ansible-pull
+Type=oneshot
+ExecStart=/usr/bin/ansible-pull -U $REPO

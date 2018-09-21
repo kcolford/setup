@@ -3,17 +3,8 @@
   roles:
     - common
 
-- hosts: all:!archlinux
-  roles:
-    - update
-
 - hosts: laptops
   roles:
-    - user
-    - graphical
+    - workstation
     - battery-saver
-    - wifi-basic
-    - office
-    - printer-scanner
-    - xyne-repo
-    - pacserve
+    - networkmanager

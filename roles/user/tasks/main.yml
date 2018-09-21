@@ -39,6 +39,12 @@
     group: '{{ admin.name }}'
     force: yes
     mode: preserve
+
+- name: secure gpg directory
+  file:
+    path: "{{ admin.home}}/.gnupg"
+    mode: og-rwx
+    recurse: yes
     
 - name: mark libvirt virtual machine directory as nocow
   file:

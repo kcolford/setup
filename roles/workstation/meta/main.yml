@@ -1,0 +1,9 @@
+dependencies:
+  - common
+  - update
+  - user
+  - graphical
+  - office
+  - printer-scanner
+  - xyne-repo
+  - pacserve

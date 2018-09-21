@@ -1,0 +1,10 @@
+[Unit]
+Description=Periodically run ansible-pull to update the system.
+
+[Timer]
+OnUnitInactiveSec=12h
+OnBootSec=5s
+RandomizedDelaySec=12h
+
+[Install]
+WantedBy=multi-user.target
