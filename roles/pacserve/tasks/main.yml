@@ -3,7 +3,7 @@
   package: name=pacserve,sponge state=present
 
 - name: start pacserve
-  service: name=pacserve enabled=yes state=started
+  service: name=pacserve enabled=yes
 
 - name: configure pacman to use pacserve
   shell: pacman.conf-insert_pacserve | sponge /etc/pacman.conf
