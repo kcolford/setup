@@ -8,9 +8,6 @@
 - name: set locale
   command: localectl set-locale LANG={{ system_locale }} creates=/etc/locale.conf
 
-- name: set X11 keymap
-  command: localectl set-x11-keymap us '' '' ctrl:nocaps creates=/etc/X11/xorg.conf.d/00-keyboard.conf
-
 - name: set console font
   lineinfile:
     path: /etc/vconsole.conf
