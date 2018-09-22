@@ -59,45 +59,8 @@ fi
 # colourize prompt according to command status
 PS1="\\[$RED\\]\${?/#0/\\[$GREEN\\]}$PS1\\[$RESET\\]"
 
-# default options
-alias curl='curl --location --cookie ~/.cookies.txt --cookie-jar ~/.cookies.txt'
-alias diff='diff --text --unified --recursive'
-alias ghc='ghc -dynamic'
-alias gpg='gpg --armour'
-alias gpgv='gpg --verify'
-alias grep='grep --color=auto'
-alias ls='ls --hide="*~" --color=auto --classify --dereference-command-line --human-readable'
-alias qemu-system-x86_64='qemu-system-x86_64 -accel kvm -smp 2 -m 2048'
-alias tcpdump='sudo tcpdump --relinquish-privileges $USER'
-alias bb-wrapper='bb-wrapper --build-dir ~/.cache/bauerbill --aur'
-alias bauerbill='bauerbill --aur'
-
-alias e='${EDITOR:-nano}'
-alias la='ls -a'
-alias ll='ls -l'
-alias l='ls -la'
-alias lr='ls -R'
-alias lar='ls -AR'
-alias sl='ls'
-alias LS='ls'
-
-alias igrep='grep --ignore-case'
-alias fu='fuck'
-alias tags='etags **.[ch]*'
-alias magit='emacsclient -t --eval "(magit-status)"'
-alias rot13='tr "A-Za-z" "N-ZA-Mn-za-m"'
-alias shortcuts='grep ^bind ~/.config/i3/config | grep -v -e move -e workspace -e focus'
-pb() { curl -F "c=@${1:--}" "https://ptpb.pw/?u=1"; }
-rfc() { curl -s "https://ietf.org/rfc/rfc${1:--index}.txt" | $PAGER; }
-sshfp() { { ssh-keygen -F "$1" || ssh-keyscan "$1"; } | sed '/^#/d' | cut -d ' ' -f 2- | ssh-keygen -r "$1" -f /dev/stdin; }
-
-encfs() {
-    if [[ $# != 2 ]] || [[ "$1" = -* ]] || [[ "$2" = -* ]]; then
-	command encfs "$@"
-    else
-	command encfs "$(realpath "$1")" "$(realpath "$2")"
-    fi
-}
+# shellcheck disable=SC1090
+. "$HOME"/.aliases
 
 import /{etc,usr{,/local}/share/bash-completion}/bash_completion
 import /usr/share/doc/pkgfile/command-not-found.bash
