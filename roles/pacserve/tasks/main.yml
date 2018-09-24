@@ -1,9 +1,11 @@
 ---
 - name: install pacserve
-  package: name=pacserve,moreutils state=present
+  package: name=pacserve state=present
 
 - name: start pacserve
   service: name=pacserve enabled=yes
 
 - name: configure pacman to use pacserve
-  shell: pacman.conf-insert_pacserve | sponge /etc/pacman.conf
+  lineinfile:
+    path: /etc/pacman.d/repo_extra
+    line: Include = /etc/pacman.d/pacserve

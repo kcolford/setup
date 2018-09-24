@@ -1,0 +1,32 @@
+---
+- name: create per-repo include file
+  command: touch /etc/pacman.d/repo_extra creates=/etc/pacman.d/repo_extra
+
+- name: setup mirrorlist
+  copy:
+    dest: /etc/pacman.d/mirrorlist
+    content: |
+      Include = /etc/pacman.d/repo_extra
+      Server = https://mirror.csclub.uwaterloo.ca/archlinux/$repo/os/$arch
+  notify: mirrorlist update
+
+- name: automatically clean up the pacman cache
+  copy: src=paccache.hook dest=/etc/pacman.d/hooks/
+
+- name: initialize pacman keyring
+  command: pacman-key --init creates=/etc/pacman.d/gnupg/
+
+- name: populate with standard package keys
+  command: pacman-key --populate archlinux
+
+- name: install intel microcode
+  package: name=intel-ucode state=present
+  when: "'GenuineIntel' in ansible_processor"
+  notify: update bootloader config
+
+- name: setup initramfs
+  lineinfile:
+    path: /etc/mkinitcpio.conf
+    line: HOOKS=(systemd autodetect sd-vconsole sd-encrypt sd-lvm2 modconf block keyboard filesystems fsck)
+    regexp: ^HOOKS
+  notify: rebuild initramfs

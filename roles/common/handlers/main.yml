@@ -7,3 +7,8 @@
 
 - name: update bootloader config
   command: grub-mkconfig -o /boot/grub/grub.cfg
+
+- name: mirrorlist update
+  pacman:
+    update_cache: yes
+    force: yes

@@ -1,0 +1,6 @@
+---
+- name: install developer tools
+  package: name={{ package_list }} state=present
+
+- name: enable updatedb to periodically run
+  service: name=updatedb.timer enabled=yes

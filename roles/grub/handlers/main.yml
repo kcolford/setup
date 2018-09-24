@@ -1,0 +1,11 @@
+---
+- name: update bootloader config
+  command: grub-mkconfig -o /boot/grub/grub.cfg
+
+- name: install grub to firmware
+  block:
+    - command: grub-install --efi-directory {{ efi_directory }}
+      when: efi_directory is defined
+
+    - command: grub-install {{ boot_disk }}
+      when: boot_disk is defined

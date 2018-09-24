@@ -1,4 +1,7 @@
 ---
+- name: set local hostname
+  copy: dest=/etc/hostname content={{ inventory_hostname }}
+
 - name: set console keymap
   lineinfile:
     path: /etc/vconsole.conf
@@ -25,26 +28,6 @@
     src: /usr/share/zoneinfo/{{ system_timezone }}
     dest: /etc/localtime
     state: link
-    
-- name: install reflector for mirrorlist updates
-  package: name=reflector state=present
-      
-- name: refresh mirrorlist
-  command: reflector --save /etc/pacman.d/mirrorlist --sort rate --fastest 5 --country {{ country_code }}
-
-- name: automatically clean up the pacman cache
-  copy: src=paccache.hook dest=/etc/pacman.d/hooks/
-
-- name: initialize pacman keyring
-  command: pacman-key --init creates=/etc/pacman.d/gnupg/
-
-- name: populate with standard package keys
-  command: pacman-key --populate archlinux
-
-- name: install intel microcode
-  package: name=intel-ucode state=present
-  when: "'GenuineIntel' in ansible_processor"
-  notify: update bootloader config
 
 - name: relax umask
   lineinfile:
@@ -55,38 +38,20 @@
 - name: automatically trim the system
   service: name=fstrim.timer enabled=yes
 
-- name: install btrfs programs
+- name: add support for btrfs filesystems
   package: name=btrfs-progs state=present
-  when: btrfs_in_use
+  when: "'btrfs' in ansible_mounts|map(attribute='fstype')"
 
-- name: setup initramfs
-  lineinfile:
-    path: /etc/mkinitcpio.conf
-    line: HOOKS=(systemd autodetect sd-vconsole sd-encrypt sd-lvm2 modconf block keyboard filesystems fsck)
-    regexp: ^HOOKS
-  notify: rebuild initramfs
-
-- name: set options for btrfs mounts
+- name: enable autodefrag and user_subvol_rm_allowed on btrfs filesystems
   mount:
     fstype: '{{ item.fstype }}'
     opts: autodefrag,user_subvol_rm_allowed
     path: '{{ item.mount }}'
     src: UUID={{ item.uuid }}
-    state: present
+    state: mounted
   when: item.fstype == 'btrfs'
   loop: '{{ ansible_mounts }}'
 
-- name: install grub bootloader
-  package: name=grub state=present
-  notify: update bootloader config
-
-- name: store kernel command line in grub config
-  lineinfile:
-    path: /etc/default/grub
-    line: GRUB_CMDLINE_LINUX=""
-    regexp: ^GRUB_CMDLINE_LINUX=
-  notify: install bootloader to disk
-  when: ansible_architecture == 'x86_64'
-  
-- name: set local hostname
-  copy: dest=/etc/hostname content={{ inventory_hostname }}
+- import_tasks: archlinux.yml
+  when: ansible_distribution == 'Archlinux'
+    

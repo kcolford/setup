@@ -1,6 +1,0 @@
----
-encrypted_root: yes
-encrypted_boot: no
-encrypted_keyfile: /etc/keyfile
-encrypted_discard: yes
-os_disk: /dev/sda

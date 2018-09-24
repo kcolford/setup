@@ -1,14 +1,13 @@
 ---
 - name: install user programs
-  pacman:
-    state: present
-    name: '{{ package_list }}'
+  package: name={{ package_list }} state=present
 
-- name: enable user services
-  service: name={{ item }} enabled=yes
-  loop:
-    - pcscd
-    - updatedb.timer
+- name: enable smartcard service
+  service: name=pcscd enabled=yes
+
+- name: enable updatedb timer for missing binaries on Archlinux
+  service: name=pkgfile-update.timer enabled=yes
+  when: ansible_distribution == 'Archlinux'
 
 - name: configure sudo
   copy:
@@ -17,7 +16,6 @@
     mode: 0440
     validate: /usr/sbin/visudo -cf %s
   become: yes
-
 
 - name: create admin user
   user:
@@ -45,22 +43,3 @@
     path: "{{ admin.home}}/.gnupg"
     mode: og-rwx
     recurse: yes
-    
-- name: mark libvirt virtual machine directory as nocow
-  file:
-    path: "{{ admin.home }}/.local/share/libvirt/images"
-    attributes: +C
-    state: directory
-    owner: '{{ admin.name }}'
-    group: '{{ admin.name }}'
-  when: false
-    
-- name: mark virtualbox virtual machine directory as nocow
-  file:
-    path: '{{ admin.home }}/VirtualBox VMs/'
-    attributes: +C
-    state: directory
-    owner: '{{ admin.name }}'
-    group: '{{ admin.name }}'
-  when: false
-  

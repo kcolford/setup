@@ -1,9 +1,13 @@
 dependencies:
   - common
+  - grub
   - update
   - user
+  - developer
   - graphical
   - office
   - printer-scanner
   - xyne-repo
   - pacserve
+  - ansible-pull
+

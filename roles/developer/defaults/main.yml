@@ -1,0 +1,39 @@
+---
+package_list:
+  - base-devel
+  - mlocate
+  - openssh
+  - pacman-contrib
+  - ripgrep
+  - sshfs
+  - git
+  - hub
+  - python
+  - python-pip
+  - nodejs
+  - npm
+  - go
+  - rust
+  - cmake
+  - clang
+  - vagrant
+  - virtualbox
+  # - watchman
+
+  - emacs
+  - xclip
+  - shellcheck
+  - aspell
+  - aspell-en
+  - go-tools
+  - flake8
+  - autopep8
+  - yapf
+  - ipython
+  - python-jedi
+  - python-rope
+  - python-virtualenv
+  - prettier
+  # - bear
+  # - gocode-git
+

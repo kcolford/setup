@@ -8,14 +8,18 @@ export EMAIL="$(git config user.email)"
 export PATH=/usr/lib/ccache/bin:"$PATH"
 export MAKEFLAGS="-j$(nproc)"
 
-export ALTERNATE_EDITOR="emacs -Q"
-export VISUAL="emacsclient -c"
-export EDITOR="emacsclient -nw"
+export EDITOR=nano
+
+if [ -x /usr/bin/emacs ]; then
+    export ALTERNATE_EDITOR="emacs -Q"
+    export VISUAL="emacsclient -c"
+    export EDITOR="emacsclient -nw"
+fi
 
 export PAGER=less
 export LESS=FRSXi
-export EDITOR="${EDITOR:-nano}"
-export TEXEDIT="${VISUAL:-$EDITOR} +%d %s"
+export EDITOR="$EDITOR"
+export TEXEDIT="$EDITOR +%d %s"
 
 export DIFFPROG=diff
 
