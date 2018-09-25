@@ -19,9 +19,13 @@
       - rust
       - cmake
       - clang
+      # - watchman
+
       - vagrant
       - virtualbox
-      # - watchman
+      - docker
+      - docker-compose
+      - docker-machine
       
       - emacs
       - xclip

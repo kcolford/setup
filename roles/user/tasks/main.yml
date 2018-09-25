@@ -10,6 +10,7 @@
       - moreutils
       - pkgfile
       - ccid
+      - opensc
       - libusb-compat
       - thefuck
       - udiskie
