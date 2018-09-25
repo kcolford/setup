@@ -1,7 +1,43 @@
 ---
 - name: install graphical programs
-  pacman:
-    name: '{{ package_list }}'
+  package:
+    state: present
+    name:
+      - lightdm
+      - lightdm-gtk-greeter
+      - accountsservice
+      - syncthing-gtk
+      - qbittorrent
+      - kdeconnect
+      - network-manager-applet
+      - i3-gaps
+      - i3blocks
+      - i3lock
+      - i3status
+      - xorg
+      - xterm
+      - compton
+      - xss-lock
+      - feh
+      - dunst
+      - scrot
+      - xdotool
+      - dex
+      - dmenu
+      - terminus-font
+      - arandr
+      - redshift
+      - python-xdg
+      - xclip
+
+      - chromium
+      - ttf-liberation
+      - noto-fonts
+      - libu2f-host
+      # - profile-sync-daemon
+      # - chromium-widevine
+
+      - firefox-developer-edition
 
 - name: configure natural scrolling
   copy:
@@ -12,7 +48,9 @@
     - 30-touchpad.conf
     
 - name: start display manager
-  service: name=lightdm enabled=yes
+  service:
+    name: lightdm
+    enabled: yes
 
 
       

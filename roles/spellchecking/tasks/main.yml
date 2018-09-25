@@ -1,0 +1,9 @@
+---
+- name: install spell checking packages
+  package:
+    state: present
+    name:
+      - hunspell
+      - hunspell-{{ system_locale }}
+      - aspell
+      - aspell-en

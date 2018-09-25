@@ -1,6 +1,42 @@
 ---
 - name: install developer tools
-  package: name={{ package_list }} state=present
-
+  package:
+    state: present
+    name:
+      - base-devel
+      - mlocate
+      - openssh
+      - pacman-contrib
+      - ripgrep
+      - sshfs
+      - git
+      - hub
+      - python
+      - python-pip
+      - nodejs
+      - npm
+      - go
+      - rust
+      - cmake
+      - clang
+      - vagrant
+      - virtualbox
+      # - watchman
+      
+      - emacs
+      - xclip
+      - shellcheck
+      - go-tools
+      - flake8
+      - autopep8
+      - yapf
+      - ipython
+      - python-jedi
+      - python-rope
+      - python-virtualenv
+      - prettier
+      # - bear
+      # - gocode-git
+    
 - name: enable updatedb to periodically run
   service: name=updatedb.timer enabled=yes

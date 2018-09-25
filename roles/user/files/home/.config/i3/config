@@ -29,7 +29,7 @@ bindsym $mod+Shift+i exec --no-startup-id loginctl lock-session && systemctl sle
 bindsym $mod+i exec --no-startup-id loginctl lock-session
 
 bindsym $mod+Return exec xterm
-bindsym $mod+b exec chromium
+bindsym $mod+b exec firefox-developer-edition
 bindsym $mod+u exec emacs
 bindsym $mod+d exec dmenu_run
 bindsym $mod+x exec i3-dmenu-desktop

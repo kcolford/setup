@@ -1,3 +1,9 @@
 ---
 - name: install suite of office software
-  package: name={{ package_list }} state=present
+  package:
+    state: present
+    name:
+      - texlive-most
+      - libreoffice-fresh
+      - hunspell-{{ system_locale }}
+      - evince

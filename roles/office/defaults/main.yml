@@ -1,5 +1,0 @@
----
-package_list:
-  - texlive-most
-  - libreoffice-fresh
-  - hunspell-{{ system_locale }}

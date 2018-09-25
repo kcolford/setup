@@ -2,3 +2,4 @@
 dependencies:
   - common
   - printer-scanner
+  - spellchecking

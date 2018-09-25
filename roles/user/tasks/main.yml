@@ -1,12 +1,29 @@
 ---
 - name: install user programs
-  package: name={{ package_list }} state=present
+  package:
+    state: present
+    name:
+      - base
+      - linux-zen
+      - linux-zen-headers
+      - bash-completion
+      - moreutils
+      - pkgfile
+      - ccid
+      - libusb-compat
+      - thefuck
+      - udiskie
+      - lesspipe
 
 - name: enable smartcard service
-  service: name=pcscd enabled=yes
+  service:
+    name: pcscd
+    enabled: yes
 
-- name: enable updatedb timer for missing binaries on Archlinux
-  service: name=pkgfile-update.timer enabled=yes
+- name: enable pkgfile timer for missing binaries on Archlinux
+  service:
+    name: pkgfile-update.timer
+    enabled: yes
   when: ansible_distribution == 'Archlinux'
 
 - name: configure sudo
@@ -27,7 +44,9 @@
   register: admin
     
 - name: lock root account
-  user: name=root password_lock=yes
+  user:
+    name: root
+    password_lock: yes
 
 - name: install dotfiles
   copy:

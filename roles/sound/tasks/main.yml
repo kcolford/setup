@@ -1,0 +1,7 @@
+---
+- name: install sound packages
+  package:
+    state: present
+    name:
+      - pulseaudio
+      - pulseaudio-alsa
