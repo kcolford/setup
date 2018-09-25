@@ -10,4 +10,5 @@ dependencies:
   - xyne-repo
   - pacserve
   - ansible-pull
+  - ecryptfs
 
