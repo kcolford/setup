@@ -1,0 +1,22 @@
+---
+- name: install ecryptfs packages
+  package:
+    state: present
+    name: ecryptfs-utils
+
+- name: configure automatic mounting of ecryptfs files
+  block:
+    - lineinfile:
+        insertafter: auth +required +pam_unix.so
+        line: auth required pam_ecryptfs.so unwrap
+    - lineinfile:
+        insertafter: password +required +pam_unix.so
+        line: password optional pam_ecryptfs.so
+    - lineinfile:
+        insertafter: session +required +pam_unix.so
+        line: session optional pam_ecryptfs.so unwrap
+  module_defaults:
+    lineinfile:
+      state: present
+      path: /etc/pam.d/system-auth
+      regexp: pam_ecryptfs.so
