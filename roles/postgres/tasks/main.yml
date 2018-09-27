@@ -1,15 +1,23 @@
 ---
 - name: install postgres
-  package: name=postgresql state=present
-- name: set postgres directory to nocow
-  file: path={{ postgres_data_directory }} attributes=+C
+  package:
+    name: postgresql
+    state: present
+    
+- name: set postgres directory to nocow in case of btrfs file system
+  file:
+    path: "{{ postgres_data_directory }}"
+    attributes: +C
+
 - name: initialize database directory
-  command: initdb -A pam -D /var/lib/postgres/data/
+  command: initdb -A pam -D {{ postgres_data_directory }}
   become_user: postgres
   become: yes
   args:
-    create:
-- service:
+    creates: "{{ postgres_data_directory }}/postgresql.conf"
+
+- name: enable postgres service
+  service:
     name: postgresql
     enabled: yes
 

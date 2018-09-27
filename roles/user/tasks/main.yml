@@ -3,7 +3,6 @@
   package:
     state: present
     name:
-      - base
       - linux-zen
       - linux-zen-headers
       - bash-completion

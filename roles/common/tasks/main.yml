@@ -1,6 +1,9 @@
 ---
 - name: set local hostname
-  copy: dest=/etc/hostname content={{ inventory_hostname }}
+  copy:
+    dest: /etc/hostname
+    content: |
+      {{ inventory_hostname }}
 
 - name: set console keymap
   lineinfile:
@@ -9,12 +12,13 @@
     regexp: ^KEYMAP
 
 - name: setup system locale
-  locale_gen: name={{ system_locale }}
+  locale_gen:
+    name: "{{ system_locale }}.{{ system_encoding }}"
 
 - name: set locale
   lineinfile:
     path: /etc/locale.conf
-    line: LANG={{ system_locale }}
+    line: LANG={{ system_locale }}.{{ system_encoding }}
     regexp: ^LANG=
 
 - name: set console font
@@ -29,17 +33,21 @@
     dest: /etc/localtime
     state: link
 
-- name: relax umask
+- name: set the umask
   lineinfile:
     path: /etc/profile
-    line: umask 002
+    line: umask {{ system_umask }}
     regexp: ^umask
 
 - name: automatically trim the system
-  service: name=fstrim.timer enabled=yes
+  service:
+    name: fstrim.timer
+    enabled: yes
 
 - name: add support for btrfs filesystems
-  package: name=btrfs-progs state=present
+  package:
+    name: btrfs-progs
+    state: present
   when: "'btrfs' in ansible_mounts|map(attribute='fstype')"
 
 - name: enable autodefrag and user_subvol_rm_allowed on btrfs filesystems

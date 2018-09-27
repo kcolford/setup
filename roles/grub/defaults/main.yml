@@ -1,2 +1,3 @@
 ---
 cmdline:
+bootloader_wait_secs: 2

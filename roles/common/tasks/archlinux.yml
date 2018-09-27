@@ -1,6 +1,8 @@
 ---
 - name: create per-repo include file
-  command: touch /etc/pacman.d/repo_extra creates=/etc/pacman.d/repo_extra
+  command: touch /etc/pacman.d/repo_extra
+  args:
+    creates: /etc/pacman.d/repo_extra
 
 - name: setup mirrorlist
   copy:
@@ -11,16 +13,24 @@
   notify: mirrorlist update
 
 - name: automatically clean up the pacman cache
-  copy: src=paccache.hook dest=/etc/pacman.d/hooks/
+  copy:
+    src: paccache.hook
+    dest: /etc/pacman.d/hooks/
 
 - name: initialize pacman keyring
-  command: pacman-key --init creates=/etc/pacman.d/gnupg/
+  command: pacman-key --init
+  args:
+    creates: /etc/pacman.d/gnupg/
 
 - name: populate with standard package keys
   command: pacman-key --populate archlinux
+  args:
+    creates: /etc/pacman.d/gnupg/tofu.db
 
 - name: install intel microcode
-  package: name=intel-ucode state=present
+  package:
+    name: intel-ucode
+    state: present
   when: "'GenuineIntel' in ansible_processor"
   notify: update bootloader config
 

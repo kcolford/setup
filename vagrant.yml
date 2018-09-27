@@ -1,5 +1,7 @@
 ---
-- hosts: vagrant-test
+- hosts: localhost
   connection: local
+  become: yes
   roles:
     - workstation
+    
