@@ -15,10 +15,18 @@
       - udiskie
       - lesspipe
 
-- name: enable smartcard service
-  service:
-    name: pcscd
-    enabled: yes
+- name: configure smartcard
+  block:
+    - name: enable smartcard service
+      service:
+        name: pcscd
+        enabled: yes
+
+    - name: use openpgp driver instead of PIV-II
+      lineinfile:
+        path: /etc/opensc.conf
+        line: driver = "openpgp";
+        regexp: driver = "PIV-II";
 
 - name: enable pkgfile timer for missing binaries on Archlinux
   service:
