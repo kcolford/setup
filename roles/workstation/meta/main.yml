@@ -1,8 +1,8 @@
 dependencies:
   - common
   - grub
-  - update
   - user
+  - dotfiles
   - developer
   - graphical
   - office

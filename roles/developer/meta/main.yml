@@ -1,3 +1,3 @@
 dependencies:
-  - user
+  - dotfiles
   - spellchecking

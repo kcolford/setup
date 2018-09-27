@@ -47,18 +47,3 @@
   user:
     name: root
     password_lock: yes
-
-- name: install dotfiles
-  copy:
-    src: home/
-    dest: "{{ admin.home }}/"
-    owner: '{{ admin.name }}'
-    group: '{{ admin.name }}'
-    force: yes
-    mode: preserve
-
-- name: secure gpg directory
-  file:
-    path: "{{ admin.home}}/.gnupg"
-    mode: og-rwx
-    recurse: yes

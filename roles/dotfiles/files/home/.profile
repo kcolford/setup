@@ -23,7 +23,8 @@ export TEXEDIT="$EDITOR +%d %s"
 
 export DIFFPROG=diff
 
-export SSH_AUTH_SOCK="${SSH_AUTH_SOCK:-$(gpgconf --list-dirs agent-ssh-socket)}"
+#export SSH_AUTH_SOCK="${SSH_AUTH_SOCK:-$(gpgconf --list-dirs agent-ssh-socket)}"
+export SSH_AUTH_SOCK="${SSH_AUTH_SOCK:-$XDG_RUNTIME_DIR/ssh-agent.socket}"
 
 export PREFIX_="$HOME"/.local
 export CPATH="$PREFIX_/include${CPATH:+:$CPATH}"
