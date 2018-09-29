@@ -1,7 +1,7 @@
 ---
 - name: install journald-forwarder
   copy:
-    src: journald-forwarder.service
+    src: journald-forward.service
     dest: /etc/systemd/system/
 
 - name: reload systemd
