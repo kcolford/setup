@@ -1,0 +1,4 @@
+---
+admin:
+  name: "{{ ansible_env.USER }}"
+  home: "{{ ansible_env.HOME }}"

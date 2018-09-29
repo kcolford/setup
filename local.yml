@@ -8,3 +8,7 @@
     - workstation
     - battery-saver
     - networkmanager
+
+- hosts: test
+  roles:
+    - workstation

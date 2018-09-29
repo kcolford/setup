@@ -1,14 +1,13 @@
 ---
 - name: configure repo
-  lineinfile:
-    path: /etc/conf.d/ansible-pull
-    line: REPO={{ current_repo }}
-    regexp: ^REPO=
+  copy:
+    dest: /etc/conf.d/ansible-pull
+    content: REPO={{ current_repo }}
 
 - name: install service files
   copy:
     src: "{{ item }}"
-    path: /etc/systemd/system/
+    dest: /etc/systemd/system/
   loop:
     - ansible-pull.service
     - ansible-pull.timer
@@ -22,4 +21,11 @@
   service:
     name: ansible-pull.timer
     enabled: yes
+
+- name: start ansible-pull timer
+  service:
+    name: ansible-pull.timer
+    state: started
+  ignore_errors: yes
+
 

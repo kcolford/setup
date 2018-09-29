@@ -2,7 +2,6 @@ dependencies:
   - common
   - grub
   - user
-  - dotfiles
   - developer
   - graphical
   - office
@@ -11,3 +10,4 @@ dependencies:
   - pacserve
   - ansible-pull
   - ecryptfs
+  - dotfiles
