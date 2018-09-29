@@ -1,0 +1,23 @@
+---
+- name: install journald-forwarder
+  copy:
+    src: journald-forwarder.service
+    dest: /etc/systemd/system/
+
+- name: reload systemd
+  systemd:
+    daemon_reload: yes
+  ignore_errors: yes
+
+- name: enable journald forwarding
+  service:
+    name: journald-forwarder
+    enabled: yes
+
+- name: start journald forwarding
+  service:
+    name: journald-forwarder
+    state: started
+  ignore_errors: yes
+
+
