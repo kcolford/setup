@@ -23,9 +23,9 @@
         enabled: yes
 
     - name: use openpgp driver instead of PIV-II
-      lineinfile:
+      replace:
         path: /etc/opensc.conf
-        line: driver = "openpgp";
+        replace: driver = "openpgp";
         regexp: driver = "PIV-II";
 
 - name: enable pkgfile timer for missing binaries on Archlinux
