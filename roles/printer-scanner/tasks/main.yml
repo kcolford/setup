@@ -1,11 +1,13 @@
 ---
 - name: install printing packages
-  pacman:
+  package:
     name:
       - cups
       - ghostscript
       - foomatic-db
       - sane
+    state: present
+      
 - name: allow wheel group to control the printing service
   lineinfile:
     path: /etc/cups/cups-files.conf
@@ -14,5 +16,14 @@
   become: yes
   notify:
     - reload print service
+    
+- name: enable the printing service
+  service:
+    name: org.cups.cupsd
+    enabled: yes
+
 - name: start the printing service
-  service: name=org.cups.cupsd enabled=yes
+  service:
+    name: org.cups.cupsd
+    state: started
+

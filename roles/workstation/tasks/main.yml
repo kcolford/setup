@@ -1,0 +1,9 @@
+---
+- import_tasks: developer.yml
+- import_tasks: ecryptfs.yml
+- import_tasks: multilib.yml
+- import_tasks: networkmanager.yml
+- import_tasks: office.yml
+- import_tasks: sound.yml
+- import_tasks: spellchecking.yml
+- import_tasks: xyne.yml

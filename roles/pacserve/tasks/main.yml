@@ -1,11 +1,21 @@
 ---
 - name: install pacserve
-  package: name=pacserve state=present
+  package:
+    name: pacserve
+    state: present
+
+- name: enable pacserve
+  service:
+    name: pacserve
+    enabled: yes
 
 - name: start pacserve
-  service: name=pacserve enabled=yes
+  service:
+    name: pacserve
+    state: started
+  ignore_errors: yes
 
 - name: configure pacman to use pacserve
-  lineinfile:
-    path: /etc/pacman.d/repo_extra
-    line: Include = /etc/pacman.d/pacserve
+  copy:
+    content: Include = /etc/pacman.d/pacserve
+    dest: /etc/pacman.d/pacserve.pacconf

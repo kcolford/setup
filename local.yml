@@ -7,8 +7,12 @@
   roles:
     - workstation
     - battery-saver
-    - networkmanager
 
 - hosts: test
   roles:
     - workstation
+
+- hosts: localhost
+  connection: local
+  roles:
+    - dotfiles

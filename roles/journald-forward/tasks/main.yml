@@ -19,5 +19,3 @@
     name: journald-forward
     state: started
   ignore_errors: yes
-
-

@@ -27,5 +27,3 @@
     name: ansible-pull.timer
     state: started
   ignore_errors: yes
-
-

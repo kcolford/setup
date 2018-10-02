@@ -47,10 +47,13 @@
     - 30-keyboard.conf
     - 30-touchpad.conf
     
-- name: start display manager
+- name: enable display manager
   service:
     name: lightdm
     enabled: yes
 
-
-      
+- name: start display manager
+  service:
+    name: lightdm
+    state: started
+  ignore_errors: yes

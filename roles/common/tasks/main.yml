@@ -1,4 +1,7 @@
 ---
+
+- import_tasks: efi.yml
+
 - name: set local hostname
   copy:
     dest: /etc/hostname
@@ -62,4 +65,8 @@
 
 - import_tasks: archlinux.yml
   when: ansible_distribution == 'Archlinux'
+
+- import_tasks: update.yml
+  tags: update
     
+- import_tasks: grub.yml

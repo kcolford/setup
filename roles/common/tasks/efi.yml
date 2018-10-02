@@ -1,0 +1,9 @@
+---
+- name: check for efivars directory
+  stat:
+    path: /sys/firmware/efi/efivars/
+  register: efivars
+
+- name: record efi
+  set_fact:
+    has_efi: "{{ efivars.exists }}"

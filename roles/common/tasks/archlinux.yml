@@ -1,14 +1,9 @@
 ---
-- name: create per-repo include file
-  command: touch /etc/pacman.d/repo_extra
-  args:
-    creates: /etc/pacman.d/repo_extra
-
 - name: setup mirrorlist
   copy:
     dest: /etc/pacman.d/mirrorlist
     content: |
-      Include = /etc/pacman.d/repo_extra
+      Include = /etc/pacman.d/*.pacconf
       Server = https://mirror.csclub.uwaterloo.ca/archlinux/$repo/os/$arch
   notify: mirrorlist update
 

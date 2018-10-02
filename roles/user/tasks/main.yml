@@ -14,6 +14,7 @@
       - thefuck
       - udiskie
       - lesspipe
+      - sudo
 
 - name: configure smartcard
   block:
@@ -21,6 +22,12 @@
       service:
         name: pcscd
         enabled: yes
+
+    - name: start smartcard service
+      service:
+        name: pcscd
+        state: started
+      ignore_errors: yes
 
     - name: use openpgp driver instead of PIV-II
       replace:

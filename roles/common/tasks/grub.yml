@@ -1,9 +1,17 @@
 ---
 - name: install grub bootloader
-  package: name=grub state=present
+  package:
+    name: grub
+    state: present
   notify:
     - update bootloader config
     - install grub to firmware
+
+- name: install efi dependencies for grub
+  package:
+    name: efibootmgr
+    state: present
+  when: has_efi
 
 - name: store kernel command line in grub config
   lineinfile:
@@ -20,3 +28,8 @@
     regexp: ^GRUB_TIMEOUT=
   notify:
     - update bootloader config
+
+- name: add efi install arguments
+  when: has_efi and efi_directory is defined
+  set_fact:
+    grub_install_args: --efi-directory {{ efi_directory }} {{ grub_install_args }}

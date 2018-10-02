@@ -1,13 +1,8 @@
 dependencies:
   - common
-  - grub
   - user
-  - developer
   - graphical
-  - office
   - printer-scanner
-  - xyne-repo
   - pacserve
   - ansible-pull
-  - ecryptfs
   - dotfiles
