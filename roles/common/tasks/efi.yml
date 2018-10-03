@@ -4,6 +4,10 @@
     path: /sys/firmware/efi/efivars/
   register: efivars
 
+- debug:
+    var: efivars
+
 - name: record efi
   set_fact:
-    has_efi: "{{ efivars.exists }}"
+    has_efi: "{{ efivars.stat.exists }}"
+    cacheable: yes
