@@ -6,6 +6,7 @@
       - base-devel
       - mlocate
       - openssh
+      - x11-ssh-askpass
       - pacman-contrib
       - ripgrep
       - sshfs
@@ -43,4 +44,12 @@
       # - gocode-git
     
 - name: enable updatedb to periodically run
-  service: name=updatedb.timer enabled=yes
+  service:
+    name: updatedb.timer
+    enabled: yes
+
+- name: start updatedb timer
+  service:
+    name: updatedb.timer
+    state: started
+  ignore_errors: yes
