@@ -15,4 +15,3 @@
   connection: local
   roles:
     - dotfiles
-
