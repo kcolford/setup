@@ -3,12 +3,6 @@
   connection: local
   roles:
     - dotfiles
-  tasks:
-    - meta: end_play
-
-- hosts: all
-  roles:
-    - common
 
 - hosts: laptops
   roles:
@@ -18,4 +12,3 @@
 - hosts: test
   roles:
     - workstation
-
