@@ -1,4 +1,11 @@
 ---
+- hosts: localhost
+  connection: local
+  roles:
+    - dotfiles
+  tasks:
+    - meta: end_play
+
 - hosts: all
   roles:
     - common
@@ -12,7 +19,3 @@
   roles:
     - workstation
 
-- hosts: localhost
-  connection: local
-  roles:
-    - dotfiles

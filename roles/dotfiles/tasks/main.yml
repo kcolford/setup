@@ -6,7 +6,7 @@
     owner: '{{ admin.name }}'
     group: '{{ admin.name }}'
     force: yes
-    mode: preserve
+    local_follow: no
   tags: dotfiles
 
 - name: secure gpg directory
@@ -15,20 +15,3 @@
     mode: og-rwx
     recurse: yes
   tags: gpg
-
-- name: install bitwarden
-  block:
-    - name: firefox extension
-      block:
-        - file:
-            state: directory
-            path: /usr/lib/firefox-developer-edition/distribution/extensions/
-        - get_url:
-            url: https://addons.mozilla.org/firefox/downloads/file/1081305/bitwarden_free_password_manager-1.32.1-fx.xpi
-            dest: /usr/lib/firefox-developer-edition/distribution/extensions/
-          ignore_errors: yes
-      tags:
-        - firefox
-        - extension
-
-  tags: bitwarden
