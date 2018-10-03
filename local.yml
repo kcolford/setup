@@ -1,14 +1,18 @@
 ---
-- hosts: localhost
-  connection: local
-  roles:
-    - dotfiles
-
-- hosts: laptops
+- name: setup laptops
+  hosts: laptops
   roles:
     - workstation
     - battery-saver
 
-- hosts: test
+- name: run tests on test servers/vagrant boxes
+  hosts: test
   roles:
     - workstation
+
+- name: install dotfiles while run on our own
+  hosts: localhost
+  connection: local
+  roles:
+    - dotfiles
+
