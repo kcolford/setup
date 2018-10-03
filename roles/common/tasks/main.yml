@@ -1,5 +1,4 @@
 ---
-
 - import_tasks: efi.yml
 
 - name: set local hostname
@@ -47,6 +46,9 @@
     name: fstrim.timer
     enabled: yes
 
+- import_tasks: archlinux.yml
+  when: ansible_distribution == 'Archlinux'
+
 - name: add support for btrfs filesystems
   package:
     name: btrfs-progs
@@ -62,9 +64,6 @@
     state: mounted
   when: item.fstype == 'btrfs'
   loop: '{{ ansible_mounts }}'
-
-- import_tasks: archlinux.yml
-  when: ansible_distribution == 'Archlinux'
 
 - import_tasks: update.yml
   tags: update
