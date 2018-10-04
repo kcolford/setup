@@ -1,0 +1,6 @@
+---
+- name: install local dotfiles
+  hosts: localhost
+  connection: local
+  roles:
+    - dotfiles

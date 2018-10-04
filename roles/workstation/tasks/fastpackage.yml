@@ -1,0 +1,10 @@
+---
+- name: install better package managers
+  package:
+    state: present
+    name:
+      - bauerbill
+      - powerpill
+      - reflector
+      - rsync
+      - python3-threaded_servers

@@ -9,9 +9,3 @@
   hosts: test
   roles:
     - workstation
-
-- name: install dotfiles while run on our own
-  hosts: localhost
-  connection: local
-  roles:
-    - dotfiles

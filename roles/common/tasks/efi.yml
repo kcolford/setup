@@ -6,6 +6,9 @@
 
 - debug:
     var: efivars
+    verbosity: 1
+  tags:
+    - debug
 
 - name: record efi
   set_fact:

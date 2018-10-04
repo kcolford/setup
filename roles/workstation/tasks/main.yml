@@ -7,3 +7,4 @@
 - import_tasks: sound.yml
 - import_tasks: spellchecking.yml
 - import_tasks: xyne.yml
+- import_tasks: fastpackage.yml
