@@ -66,6 +66,8 @@
   loop: '{{ ansible_mounts }}'
 
 - import_tasks: update.yml
-  tags: update
+  tags:
+    - update
+    - never
     
 - import_tasks: grub.yml

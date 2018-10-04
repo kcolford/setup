@@ -8,3 +8,9 @@
       - reflector
       - rsync
       - python3-threaded_servers
+
+- name: make powerpill make use of pacserve
+  lineinfile:
+    path: /etc/powerpill/powerpill.json
+    regexp: '"server": '
+    line: '"server: "http://localhost:15678"'
