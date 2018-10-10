@@ -1,15 +1,20 @@
 localhost
 
 [laptops]
-silver-fish
+silver-fish.kcolford.com
 
 [servers]
-geezer
+geezer.kcolford.com
 
 [desktop]
-hades
+hades.kcolford.com
 
 [rescue]
 archlinux
 archiso
 archboot
+
+[uwaterloo.ca]
+*.uwaterloo.ca
+[kcolford.com]
+*.kcolford.com

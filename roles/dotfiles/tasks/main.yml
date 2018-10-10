@@ -1,4 +1,9 @@
 ---
+- name: lookup user info
+  user:
+    name: "{{ user_name }}"
+  register: user
+
 - name: install dotfiles
   block:
     - name: copy just portable files
@@ -20,9 +25,9 @@
 
   module_defaults:
     copy:
-      dest: "{{ admin.home }}/"
-      owner: '{{ admin.name }}'
-      group: '{{ admin.name }}'
+      dest: "{{ user.home }}/"
+      owner: '{{ user.name }}'
+      group: '{{ user.group }}'
       force: yes
       local_follow: no
   tags: dotfiles
