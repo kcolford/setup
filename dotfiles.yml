@@ -2,5 +2,7 @@
 - name: install local dotfiles
   hosts: localhost
   connection: local
+  vars:
+    user_name: "{{ ansible_env.USER }}"
   roles:
     - dotfiles

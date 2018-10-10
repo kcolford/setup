@@ -34,7 +34,7 @@
 
 - name: secure gpg directory
   file:
-    path: "{{ admin.home}}/.gnupg"
+    path: "{{ user.home}}/.gnupg"
     mode: og-rwx
     recurse: yes
   tags: gpg
