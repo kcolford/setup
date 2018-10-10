@@ -5,7 +5,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (protobuf-mode graphviz-dot-mode ecb semi direnv ggtags use-package-chords diminish edit-server lorem-ipsum auto-package-update yasnippet-snippets go-snippets js2-mode prettier-js less-css-mode flycheck use-package-ensure-system-package use-package pkgbuild-mode company-ghc yasnippet company-try-hard caps-lock clang-format cmake-mode company company-auctex auctex company-c-headers company-dict company-flx company-go company-irony company-irony-c-headers company-shell company-statistics company-web csv-mode docker-compose-mode dockerfile-mode editorconfig elpy flycheck-irony gitconfig-mode gitignore-mode go-mode google google-c-style haskell-mode hc-zenburn-theme irony irony-eldoc json-mode magit markdown-mode projectile ssh-config-mode systemd web-mode yaml-mode))))
+    (tramp-sh elisp-mode text-mode dired-x dired magit-lfs company-clang protobuf-mode graphviz-dot-mode ecb semi direnv ggtags use-package-chords diminish edit-server lorem-ipsum auto-package-update yasnippet-snippets go-snippets js2-mode prettier-js less-css-mode flycheck use-package-ensure-system-package use-package pkgbuild-mode company-ghc yasnippet company-try-hard clang-format cmake-mode company company-auctex auctex company-c-headers company-dict company-flx company-go company-irony company-irony-c-headers company-shell company-statistics company-web csv-mode docker-compose-mode dockerfile-mode editorconfig elpy flycheck-irony gitconfig-mode gitignore-mode go-mode google google-c-style haskell-mode hc-zenburn-theme irony irony-eldoc json-mode magit markdown-mode projectile ssh-config-mode systemd web-mode yaml-mode))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -24,13 +24,21 @@ The minor mode's documentation is specified in DOC."
 	   (remove-hook 'before-save-hook (quote ,fn) t)))
        (add-to-list 'safe-local-eval-forms '(,mode 0)))))
 
-(setq package-archives '(("melpa-stable" . "https://stable.melpa.org/packages/")
-			 ("melpa" . "https://melpa.org/packages/")
-			 ("gnu" . "http://elpa.gnu.org/packages/"))
-      package-archive-priorities '(("melpa-stable" . 10)
-				   ("gnu" . 5)
-				   ("melpa" . 0)))
+(defmacro req (&rest pkgs)
+  "Force download but not loading of PKGS."
+  (cons 'progn (mapcar (lambda (pkg) `(use-package ,pkg :ensure t :defer t)) pkgs)))
+
+;; reduce garbage collection at startup
+(setq gc-cons-threshold 64000000)
+(add-hook 'after-init-hook #'(lambda ()
+			       (setq gc-cons-threshold 800000)))
+
+;; initialize packages
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+			 ("gnu" . "http://elpa.gnu.org/packages/")))
 (package-initialize)
+
+;; install basic files on first run
 (let ((firstrun (concat user-emacs-directory "firstrun")))
   (unless (file-readable-p firstrun)
     (package-refresh-contents)
@@ -43,26 +51,17 @@ The minor mode's documentation is specified in DOC."
 
 ;; setup use-package
 (eval-when-compile
-  (require 'use-package))
-(use-package auto-package-update
-  :ensure t
-  :if (daemonp)
-  :config (auto-package-update-maybe))
-(use-package bind-key
-  :ensure t)
-(use-package diminish
-  :ensure t)
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+  (require 'use-package)
+  (setq use-package-always-ensure t)
+  (setq use-package-verbose t))
+(use-package bind-key)
+(use-package diminish)
 (use-package use-package-chords
-  :ensure t
   :config (key-chord-mode 1))
-(use-package system-packages
-  :disabled
-  :ensure t)
-
-;; byte compile the init file
-;; (add-hook 'after-save-hook		;compile the init file
-;;	  (lambda () (when (equal buffer-file-name user-init-file)
-;;		       (emacs-lisp-byte-compile))))
+(use-package system-packages :disabled)
 
 ;; some generic settings for emacs as a whole
 (scroll-bar-mode 0)
@@ -89,21 +88,42 @@ The minor mode's documentation is specified in DOC."
 (bind-key "C-=" 'start-xterm)
 (define-save-minor-mode whitespace-cleanup)
 (add-to-list 'safe-local-variable-values '(buffer-file-coding-system . dos))
+(add-to-list 'auto-mode-alist '("README" . text-mode))
+
+(req protobuf-mode)
+(req graphviz-dot-mode)
+(req ecb semi)
+(req lorem-ipsum)
+
+;; info lookup
+(use-package google-this
+  :config
+  (google-this-mode))
+
+(req haskell-mode)
+
+(req json-mode)
+
+(req markdown-mode)
+
+(req css-mode)
+
+(req less-css-mode)
+
+(req ssh-config-mode)
+
+(req systemd)
+
+;; tag search
+(use-package ggtags
+  :hook ((c-mode c++-mode java-mode) . ggtags-mode))
+(req ripgrep)
 
 ;; some generic helpers
 (defun start-xterm ()
   "Start xterm in local directory."
   (interactive)
   (start-process "xterm" nil "xterm"))
-
-(defun emacsclient-mergetool (local remote base output)
-  "Run emacsclient as a mergetool in git."
-  (emerge-files-with-ancestor nil local remote base output nil (lambda () (delete-frame (select-frame)))))
-
-;; tramp integration
-(setq-default tramp-default-method "ssh")
-(setq-default auto-revert-remote-files t)
-(setq enable-remote-dir-locals t)
 
 ;; prevent annoying windows from popping up out of reach
 (setq display-buffer-base-action '((display-buffer-use-some-window display-buffer-same-window) (nil)))
@@ -124,34 +144,57 @@ The minor mode's documentation is specified in DOC."
     (setq interprogram-cut-function 'xclip-cut-function)
     (setq interprogram-paste-function 'xclip-paste-function)))
 
-(use-package generic-x)
+;; theme
 (use-package hc-zenburn-theme
   :ensure hc-zenburn-theme
   :init (load-theme 'hc-zenburn t))
+
+;; check errors
 (use-package flycheck
-  ;; :ensure-system-package (shellcheck)
   :diminish flycheck-mode
   :config (global-flycheck-mode))
 (use-package flyspell
-  ;; :ensure-system-package (aspell (true . "aspell-en"))
   :diminish (flyspell-mode flyspell-prog-mode)
   :hook ((text-mode . flyspell-mode)
 	 (prog-mode . flyspell-prog-mode))
   :init
   (setq-default flyspell-use-meta-tab nil))
+
+;; make editor play nice
 (use-package editorconfig
   :diminish editorconfig-mode
   :config (editorconfig-mode))
+
+;; auto type
 (use-package yasnippet
   :after (elisp-mode cc-mode go-mode)
   :config (yas-global-mode))
+
+;; projects
 (use-package projectile
   :diminish projectile-mode
+  :bind-keymap ("C-c p" . projectile-command-map)
   :config (projectile-mode))
-(use-package direnv
-  :disabled
-  ;; :ensure-system-package direnv
-  :config (direnv-mode))
+
+;; config files
+(use-package generic-x :ensure nil)
+(req gitconfig-mode)
+(req gitignore-mode)
+(req pkgbuild-mode)
+(req csv-mode)
+(req docker-compose-mode)
+(req yaml-mode)
+
+(use-package auto-package-update
+  :config
+  (setq auto-package-update-delete-old-versions t)
+  (setq auto-package-update-hide-results t)
+  (auto-package-update-maybe))
+
+(use-package magit
+  :bind ("C-c C-v" . magit-status))
+(use-package magit-lfs
+  :after magit)
 
 (use-package company
   :config (global-company-mode))
@@ -164,14 +207,13 @@ The minor mode's documentation is specified in DOC."
   (require 'dired)
   (dired-mark-files-regexp "^\\."))
 (use-package dired
+  :ensure nil
   :bind (:map dired-mode-map
 	      ("b" . browse-url-of-dired-file)
 	      ("," . dired-mark-dotfiles)))
 (use-package dired-x
+  :ensure nil
   :after dired)
-
-(use-package text-mode
-  :mode "README")
 
 (use-package org
   :bind (("C-c a" . org-agenda)
@@ -192,14 +234,14 @@ The minor mode's documentation is specified in DOC."
   :after (tex company)
   :config (company-auctex-init))
 
-(use-package elisp-mode
-  :defer t
-  :bind (:map emacs-lisp-mode-map
-	      ("C-c C-s" . apropos)
-	      ("C-c C-d" . describe-symbol)))
+(with-eval-after-load 'elisp-mode
+  (bind-key "C-c C-s" 'apropos emacs-lisp-mode-map)
+  (bind-key "C-C C-d" 'describe-symbol emacs-lisp-mode-map))
 (use-package eldoc
   :hook (emacs-lisp-mode . eldoc-mode))
 (add-hook 'emacs-lisp-mode-hook 'whitespace-cleanup-mode)
+(define-save-minor-mode emacs-lisp-byte-compile)
+(add-hook 'emacs-lisp-mode-hook 'emacs-lisp-byte-compile-mode)
 
 (define-save-minor-mode gofmt-before-save)
 (use-package go-mode
@@ -250,16 +292,16 @@ The minor mode's documentation is specified in DOC."
   (add-to-list 'company-backends 'company-web-slim))
 (use-package js2-mode :mode "\\.js\\'")
 (use-package prettier-js
-  ;; :ensure-system-package prettier
-  :hook ((js2-mode . prettier-js-mode)
-	 (js-mode . prettier-js-mode)
-	 (web-mode . prettier-js-mode)
-	 (markdown-mode . prettier-js-mode)
-	 (css-mode . prettier-js-mode)
-	 (less-css-mode . prettier-js-mode)
-	 (json-mode . prettier-js-mode)))
+  :hook ((js2-mode js-mode web-mode markdown-mode css-mode less-css-mode json-mode) . prettier-js-mode))
+
+(setq-default tramp-default-method "ssh")
+(setq-default auto-revert-remote-files t)
+(setq enable-remote-dir-locals t)
+(with-eval-after-load 'tramp-sh
+  (add-to-list 'tramp-remote-path 'tramp-own-path))
 
 (use-package company-clang
+  :ensure nil
   :init (setq company-clang-arguments "-std=c++11")
   :config (add-to-list 'company-backends 'company-clang))
 (use-package google-c-style
@@ -269,6 +311,9 @@ The minor mode's documentation is specified in DOC."
   :hook (c-mode-common . irony-mode)
   :init
   (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
+(use-package flycheck-irony
+  :after (flycheck irony)
+  :config (flycheck-irony-setup))
 (defun irony-setup-cmake ()
   "Have cmake export compile commands for irony."
   (interactive)

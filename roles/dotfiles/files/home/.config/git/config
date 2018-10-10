@@ -33,10 +33,7 @@
 [url "git://anongit.freedesktop.org/"]
 	insteadOf = "freedesktop:"
 [merge]
-	tool = emacsclient
-[mergetool "emacsclient"]
-	cmd = emacsclient -t --eval \"(emacsclient-mergetool \\\"$LOCAL\\\" \\\"$REMOTE\\\" \\\"$BASE\\\" \\\"$OUTPUT\\\"
-	trustExitCode = true
+	tool = emerge
 [user]
 	email = kieran@kcolford.com
 	name = Kieran Colford

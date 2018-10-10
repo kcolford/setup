@@ -1,12 +1,30 @@
 ---
 - name: install dotfiles
-  copy:
-    src: home/
-    dest: "{{ admin.home }}/"
-    owner: '{{ admin.name }}'
-    group: '{{ admin.name }}'
-    force: yes
-    local_follow: no
+  block:
+    - name: copy just portable files
+      copy:
+        src: home/{{ item }}
+      loop:
+        - .profile
+        - .inputrc
+        - .bashrc
+        - .bash_profile
+      tags:
+        - basicdotfiles
+
+    - name: copy full dotfiles
+      copy:
+        src: home/
+      tags:
+        - fulldotfiles
+
+  module_defaults:
+    copy:
+      dest: "{{ admin.home }}/"
+      owner: '{{ admin.name }}'
+      group: '{{ admin.name }}'
+      force: yes
+      local_follow: no
   tags: dotfiles
 
 - name: secure gpg directory
