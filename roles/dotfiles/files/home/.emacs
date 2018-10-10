@@ -13,15 +13,16 @@
  ;; If there is more than one, they won't work right.
  )
 
-(defmacro define-save-minor-mode (fn &optional doc)
+(defmacro define-save-minor-mode (fn &optional after)
   "Define a minor mode `FN-mode' that triggers FN every time a file is saved.
-The minor mode's documentation is specified in DOC."
-  (let ((mode (intern (format "%s-mode" fn))))
+The command will run after the save if AFTER is not nil."
+  (let ((mode (intern (format "%s-mode" fn)))
+	(hook (if after 'after-save-hook 'before-save-hook)))
     `(progn
-       (define-minor-mode ,mode ,doc nil nil nil
+       (define-minor-mode ,mode "" nil nil nil
 	 (if ,mode
-	     (add-hook 'before-save-hook (quote ,fn) nil t)
-	   (remove-hook 'before-save-hook (quote ,fn) t)))
+	     (add-hook (quote ,hook) (quote ,fn) nil t)
+	   (remove-hook (quote ,hook) (quote ,fn) t)))
        (add-to-list 'safe-local-eval-forms '(,mode 0)))))
 
 (defmacro req (&rest pkgs)
@@ -97,6 +98,7 @@ The minor mode's documentation is specified in DOC."
 
 ;; info lookup
 (use-package google-this
+  :diminish google-this-mode
   :config
   (google-this-mode))
 
