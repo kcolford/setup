@@ -7,4 +7,5 @@ system_umask: "0022"
 country_code: CA
 cmdline: ""
 bootloader_wait_secs: 2
-grub_install_args:
+grub_install_args: ""
+sysrq: 1
