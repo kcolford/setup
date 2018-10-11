@@ -35,7 +35,9 @@ try_eval() {
     if command -v "$1" > /dev/null; then
 	eval "$("$@")"
     else
-	pkgfile -bv "$1"
+	if command -v pkgfile > /dev/null; then
+	    pkgfile -bv "$1"
+	fi
     fi
 }
 

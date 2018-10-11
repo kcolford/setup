@@ -203,6 +203,7 @@ The command will run after the save if AFTER is not nil."
 (use-package company
   :config (global-company-mode))
 (use-package company-statistics
+  :after company
   :config (company-statistics-mode))
 
 (defun dired-mark-dotfiles ()
@@ -277,7 +278,7 @@ The command will run after the save if AFTER is not nil."
   (elpy-enable))
 
 (use-package company-shell
-  :after (sh-script after)
+  :after (sh-script company)
   :config (add-to-list 'company-backends 'company-shell))
 
 (use-package web-mode
