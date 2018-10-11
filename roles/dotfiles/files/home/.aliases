@@ -15,6 +15,7 @@ alias bauerbill='bauerbill --aur'
 alias xclip='xclip -selection clipboard'
 
 alias e='${EDITOR:-nano}'
+alias em='emacs -Q'
 alias la='ls -a'
 alias ll='ls -l'
 alias l='ls -la'

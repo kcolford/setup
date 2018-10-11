@@ -14,6 +14,7 @@
         - .inputrc
         - .bashrc
         - .bash_profile
+        - .screenrc
       tags:
         - basicdotfiles
 
@@ -30,7 +31,8 @@
       group: '{{ user.group }}'
       force: yes
       local_follow: no
-  tags: dotfiles
+  tags:
+    - dotfiles
 
 - name: secure gpg directory
   file:

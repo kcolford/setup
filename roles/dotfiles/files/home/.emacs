@@ -5,7 +5,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (tramp-sh elisp-mode text-mode dired-x dired magit-lfs company-clang protobuf-mode graphviz-dot-mode ecb semi direnv ggtags use-package-chords diminish edit-server lorem-ipsum auto-package-update yasnippet-snippets go-snippets js2-mode prettier-js less-css-mode flycheck use-package-ensure-system-package use-package pkgbuild-mode company-ghc yasnippet company-try-hard clang-format cmake-mode company company-auctex auctex company-c-headers company-dict company-flx company-go company-irony company-irony-c-headers company-shell company-statistics company-web csv-mode docker-compose-mode dockerfile-mode editorconfig elpy flycheck-irony gitconfig-mode gitignore-mode go-mode google google-c-style haskell-mode hc-zenburn-theme irony irony-eldoc json-mode magit markdown-mode projectile ssh-config-mode systemd web-mode yaml-mode))))
+    (magit-lfs company-clang protobuf-mode graphviz-dot-mode ecb semi direnv ggtags use-package-chords diminish edit-server lorem-ipsum auto-package-update yasnippet-snippets go-snippets js2-mode prettier-js less-css-mode flycheck use-package-ensure-system-package use-package pkgbuild-mode company-ghc yasnippet company-try-hard clang-format cmake-mode company company-auctex auctex company-c-headers company-dict company-flx company-go company-irony company-irony-c-headers company-shell company-statistics company-web csv-mode docker-compose-mode dockerfile-mode editorconfig elpy flycheck-irony gitconfig-mode gitignore-mode go-mode google google-c-style haskell-mode hc-zenburn-theme irony irony-eldoc json-mode magit markdown-mode projectile ssh-config-mode systemd web-mode yaml-mode))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -118,6 +118,7 @@ The command will run after the save if AFTER is not nil."
 
 ;; tag search
 (use-package ggtags
+  :diminish ggtags-mode
   :hook ((c-mode c++-mode java-mode) . ggtags-mode))
 (req ripgrep)
 
@@ -155,6 +156,7 @@ The command will run after the save if AFTER is not nil."
 (use-package flycheck
   :diminish flycheck-mode
   :config (global-flycheck-mode))
+
 (use-package flyspell
   :diminish (flyspell-mode flyspell-prog-mode)
   :hook ((text-mode . flyspell-mode)
@@ -242,8 +244,7 @@ The command will run after the save if AFTER is not nil."
 (use-package eldoc
   :hook (emacs-lisp-mode . eldoc-mode))
 (add-hook 'emacs-lisp-mode-hook 'whitespace-cleanup-mode)
-(define-save-minor-mode emacs-lisp-byte-compile)
-(add-hook 'emacs-lisp-mode-hook 'emacs-lisp-byte-compile-mode)
+(define-save-minor-mode emacs-lisp-byte-compile t)
 
 (define-save-minor-mode gofmt-before-save)
 (use-package go-mode
@@ -296,8 +297,8 @@ The command will run after the save if AFTER is not nil."
 (use-package prettier-js
   :hook ((js2-mode js-mode web-mode markdown-mode css-mode less-css-mode json-mode) . prettier-js-mode))
 
-(setq-default tramp-default-method "ssh")
-(setq-default auto-revert-remote-files t)
+;(setq-default tramp-default-method "ssh")
+;(setq-default auto-revert-remote-files t)
 (setq enable-remote-dir-locals t)
 (with-eval-after-load 'tramp-sh
   (add-to-list 'tramp-remote-path 'tramp-own-path))

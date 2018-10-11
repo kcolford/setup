@@ -12,7 +12,7 @@ export EDITOR=nano
 
 if [ -x /usr/bin/emacs ]; then
     export ALTERNATE_EDITOR="emacs -Q"
-    export VISUAL="emacsclient -c"
+    export VISUAL="emacsclient -nw"
     export EDITOR="emacsclient -nw"
 fi
 
