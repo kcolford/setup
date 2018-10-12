@@ -5,7 +5,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (magit-lfs company-clang protobuf-mode graphviz-dot-mode ecb semi direnv ggtags use-package-chords diminish edit-server lorem-ipsum auto-package-update yasnippet-snippets go-snippets js2-mode prettier-js less-css-mode flycheck use-package-ensure-system-package use-package pkgbuild-mode company-ghc yasnippet company-try-hard clang-format cmake-mode company company-auctex auctex company-c-headers company-dict company-flx company-go company-irony company-irony-c-headers company-shell company-statistics company-web csv-mode docker-compose-mode dockerfile-mode editorconfig elpy flycheck-irony gitconfig-mode gitignore-mode go-mode google google-c-style haskell-mode hc-zenburn-theme irony irony-eldoc json-mode magit markdown-mode projectile ssh-config-mode systemd web-mode yaml-mode))))
+    (helm magit-lfs company-clang protobuf-mode graphviz-dot-mode ecb semi direnv ggtags use-package-chords diminish edit-server lorem-ipsum auto-package-update yasnippet-snippets go-snippets js2-mode prettier-js less-css-mode flycheck use-package-ensure-system-package use-package pkgbuild-mode company-ghc yasnippet company-try-hard clang-format cmake-mode company company-auctex auctex company-c-headers company-dict company-flx company-go company-irony company-irony-c-headers company-shell company-statistics company-web csv-mode docker-compose-mode dockerfile-mode editorconfig elpy flycheck-irony gitconfig-mode gitignore-mode go-mode google google-c-style haskell-mode hc-zenburn-theme irony irony-eldoc json-mode magit markdown-mode projectile ssh-config-mode systemd web-mode yaml-mode))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -62,18 +62,18 @@ The command will run after the save if AFTER is not nil."
 (use-package diminish)
 (use-package use-package-chords
   :config (key-chord-mode 1))
-(use-package system-packages :disabled)
+(use-package system-packages)
 
 ;; some generic settings for emacs as a whole
 (scroll-bar-mode 0)
 (tool-bar-mode 0)
-(icomplete-mode)
 (save-place-mode)
 (global-auto-revert-mode)
 (show-paren-mode)
 (windmove-default-keybindings)
 (xterm-mouse-mode)
 (mouse-wheel-mode)
+(setq vc-handled-backends '(Git))
 (defalias 'yes-or-no-p 'y-or-n-p)
 (setq inhibit-startup-screen t)
 (setq-default warning-minimum-log-level :error)
@@ -90,6 +90,15 @@ The command will run after the save if AFTER is not nil."
 (define-save-minor-mode whitespace-cleanup)
 (add-to-list 'safe-local-variable-values '(buffer-file-coding-system . dos))
 (add-to-list 'auto-mode-alist '("README" . text-mode))
+
+;; completions
+;(icomplete-mode)
+(ido-mode)
+(use-package helm
+  :diminish helm-mode
+  :config (helm-mode))
+(use-package helm-config
+  :after helm :ensure helm)
 
 (req protobuf-mode)
 (req graphviz-dot-mode)
@@ -201,6 +210,7 @@ The command will run after the save if AFTER is not nil."
   :after magit)
 
 (use-package company
+  :diminish company-mode
   :config (global-company-mode))
 (use-package company-statistics
   :after company
@@ -227,12 +237,14 @@ The command will run after the save if AFTER is not nil."
 	 ("C-c l" . org-store-link)))
 
 (use-package tex
+  :defer t
   :ensure auctex
   :config
   (setq TeX-auto-save t)
   (setq TeX-parse-self t)
   (setq-default TeX-master 'dwim))
 (use-package reftex
+  :after tex
   :hook (LaTeX-mode . reftex-mode)
   :hook (latex-mode . reftex-mode))
 (use-package company-auctex
@@ -243,6 +255,7 @@ The command will run after the save if AFTER is not nil."
   (bind-key "C-c C-s" 'apropos emacs-lisp-mode-map)
   (bind-key "C-C C-d" 'describe-symbol emacs-lisp-mode-map))
 (use-package eldoc
+  :diminish eldoc-mode
   :hook (emacs-lisp-mode . eldoc-mode))
 (add-hook 'emacs-lisp-mode-hook 'whitespace-cleanup-mode)
 (define-save-minor-mode emacs-lisp-byte-compile t)
@@ -269,6 +282,7 @@ The command will run after the save if AFTER is not nil."
 (define-save-minor-mode elpy-format-code)
 (define-save-minor-mode elpy-importmagic-fixup)
 (use-package elpy
+  :after python
   ;; :ensure-system-package (flake8 autopep8 yapf ipython (true . "python-jedi") (true . "python-rope") (virtualenv . "python-virtualenv"))
   :init
   (setq elpy-rpc-timeout 10)
@@ -298,10 +312,14 @@ The command will run after the save if AFTER is not nil."
 (use-package prettier-js
   :hook ((js2-mode js-mode web-mode markdown-mode css-mode less-css-mode json-mode) . prettier-js-mode))
 
-;(setq-default tramp-default-method "ssh")
-;(setq-default auto-revert-remote-files t)
-(setq enable-remote-dir-locals t)
+;; (setq-default tramp-default-method "ssh")
+;; (setq-default auto-revert-remote-files t)
+;; (setq enable-remote-dir-locals t)
+(with-eval-after-load 'tramp
+  (setq tramp-verbose 0))
 (with-eval-after-load 'tramp-sh
+  (setq tramp-use-ssh-controlmaster-options nil)
+  (setq tramp-histfile-override t)
   (add-to-list 'tramp-remote-path 'tramp-own-path))
 
 (use-package company-clang
