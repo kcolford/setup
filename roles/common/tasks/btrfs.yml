@@ -1,0 +1,16 @@
+- name: add support for btrfs filesystems
+  package:
+    name: btrfs-progs
+    state: present
+  when: "'btrfs' in ansible_mounts|map(attribute='fstype')"
+
+- name: enable autodefrag and user_subvol_rm_allowed on btrfs filesystems
+  mount:
+    fstype: '{{ item.fstype }}'
+    opts: autodefrag,user_subvol_rm_allowed
+    path: '{{ item.mount }}'
+    src: UUID={{ item.uuid }}
+    state: mounted
+  when: item.fstype == 'btrfs'
+  loop: '{{ ansible_mounts }}'
+
