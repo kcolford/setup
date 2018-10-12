@@ -46,7 +46,17 @@
   loop:
     - 30-keyboard.conf
     - 30-touchpad.conf
-    
+
+- name: allow redshift to access location
+  blockinfile:
+    path: /etc/geoclue/geoclue.conf
+    block: |
+      [redshift]
+      allowed=true
+      system=false
+      users=
+  tags: redshiftgeoclue
+
 - name: create firefox global default extensions directory
   file:
     state: directory

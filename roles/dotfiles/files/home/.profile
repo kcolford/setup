@@ -1,9 +1,7 @@
 #!/bin/sh
 
-export NAME="$(getent passwd "$USER" | cut -d : -f 5 | cut -d , -f 1)"
-export NAME="$(git config user.name)"
-export EMAIL="${USER}@$(hostname --domain)"
-export EMAIL="$(git config user.email)"
+export NAME="Kieran Colford"
+export EMAIL="kieran@kcolford.com"
 
 export PATH=/usr/lib/ccache/bin:"$PATH"
 export MAKEFLAGS="-j$(nproc)"

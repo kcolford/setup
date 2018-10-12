@@ -1,8 +1,7 @@
 dependencies:
   - common
   - user
-  - graphical
   - printer-scanner
-  - pacserve
+  - packaging
   - ansible-pull
   - dotfiles

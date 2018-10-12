@@ -1,4 +1,5 @@
 ---
+- import_tasks: graphical.yml
 - import_tasks: developer.yml
 - import_tasks: ecryptfs.yml
 - import_tasks: multilib.yml
@@ -6,5 +7,3 @@
 - import_tasks: office.yml
 - import_tasks: sound.yml
 - import_tasks: spellchecking.yml
-- import_tasks: xyne.yml
-- import_tasks: fastpackage.yml
