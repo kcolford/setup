@@ -1,11 +1,35 @@
 ---
-- name: setup laptops
-  hosts: laptops
+- hosts: recovery
+  vars_prompt:
+    - name: install_target
+      prompt: What system are we recovering?
+      
+    - name: user_password
+      prompt: What is the user's password?
+      private: yes
+      
+  vars:
+    pull_expect:
+      What is the user's password?: "{{ user_password }}"
+      
+  roles:
+    - role: install_arch
+      when: ansible_distribution == "Archlinux"
+
+- hosts: desktops:laptops
+  vars_prompt:
+    - name: user_password
+      prompt: What is the user's password?
+      default: password
+      private: yes
+      
   roles:
     - workstation
+
+- hosts: laptops
+  roles:
     - battery-saver
 
-- name: run tests on test servers/vagrant boxes
-  hosts: test
+- hosts: test
   roles:
     - workstation

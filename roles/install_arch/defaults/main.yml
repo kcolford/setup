@@ -1,0 +1,2 @@
+encryption: "{{ hostvars[install_target].encryption|default(encryption) }}"
+root_fstype: "{{ hostvars[install_target].root_fstype|default(root_fstype) }}"

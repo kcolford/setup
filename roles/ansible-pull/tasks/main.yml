@@ -2,7 +2,7 @@
 - name: configure repo
   copy:
     dest: /etc/conf.d/ansible-pull
-    content: REPO={{ current_repo }}
+    content: REPO={{ repo_url }}
 
 - name: install service files
   copy:

@@ -36,7 +36,20 @@
 
 - name: secure gpg directory
   file:
-    path: "{{ user.home}}/.gnupg"
+    path: "{{ user.home }}/.gnupg"
     mode: og-rwx
     recurse: yes
   tags: gpg
+
+- name: mark virtual machine directories as nocow
+  file:
+    owner: "{{ user.name }}"
+    group: "{{ user.group }}"
+    path: "{{ user.home }}/{{ item }}"
+    attributes: +C
+    state: directory
+  when: root_fstype == 'btrfs'
+  loop:
+    - VirtualBox VMs
+    - .local/share/libvirt/images
+

@@ -1,0 +1,6 @@
+encryption: none
+root_fstype: btrfs
+repo_url: https://github.com/kcolford/setup
+user_name: kieran
+user_password: password
+user_password_salt: "{{ inventory_hostname }}"

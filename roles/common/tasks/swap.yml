@@ -1,0 +1,26 @@
+- when: encryption == 'none'
+  block:
+    - crypttab:
+        name: /dev/mapper/swap
+        opts: swap
+        password: /dev/urandom
+        state: present
+        backing_device: /dev/rootvol/swap
+
+    - mount:
+        path: none
+        fstype: swap
+        state: present
+        src: /dev/mapper/swap
+
+- when: encryption == 'disk'
+  block:
+    - command: swapon /dev/rootvol/swap
+      ignore_errors: yes
+      register: check
+
+    - when: check.rc == 1
+      command: mkswap /dev/rootvol/swap
+
+    - set_fact:
+        resume_device: /dev/rootvol/swap

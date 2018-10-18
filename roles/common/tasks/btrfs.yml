@@ -7,7 +7,7 @@
 - name: enable autodefrag and user_subvol_rm_allowed on btrfs filesystems
   mount:
     fstype: '{{ item.fstype }}'
-    opts: autodefrag,user_subvol_rm_allowed
+    opts: autodefrag,user_subvol_rm_allowed,{{ item.options }}
     path: '{{ item.mount }}'
     src: UUID={{ item.uuid }}
     state: mounted
