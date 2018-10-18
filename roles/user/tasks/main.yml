@@ -15,6 +15,7 @@
       - udiskie
       - lesspipe
       - sudo
+      - unzip
 
 - name: configure smartcard
   block:

@@ -16,10 +16,9 @@ exec --no-startup-id ~/.fehbg
 exec --no-startup-id ~/.screenlayout/default.sh
 exec --no-startup-id xss-lock -- i3lock -n -c 909090
 exec --no-startup-id systemctl --user restart emacs
-exec --no-startup-id dex -a
+exec --no-startup-id dex -a -e i3
 exec --no-startup-id compton
 exec --no-startup-id udiskie
-exec --no-startup-id /usr/lib/geoclue-2.0/demos/agent
 
 bindsym $mod+Shift+q kill
 bindsym $mod+Shift+c reload

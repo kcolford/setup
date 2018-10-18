@@ -1,0 +1,106 @@
+---
+- name: install parted for partition management
+  package:
+    name: parted
+    state: present
+
+- when: has_efi
+  module_defaults:
+    parted:
+      state: present
+      device: "{{ os_disk }}"
+      label: gpt
+  block:
+    - parted:
+        number: 1
+        part_end: 1GiB
+        flags: esp
+        name: BOOT
+
+    - filesystem:
+        dev: /dev/disk/by-partlabel/BOOT
+        fstype: vfat
+        opts: -n BOOT
+
+    - parted:
+        number: 2
+        part_start: 1GiB
+        name: LINUX
+
+- when: not has_efi
+  module_defaults:
+    parted:
+      state: present
+      device: "{{ os_disk }}"
+      label: gpt
+  block:
+    - parted:
+        number: 3
+        part_end: 1MiB
+        flags: bios_grub
+
+    - parted:
+        number: 1
+        part_start: 1MiB
+        part_end: 1GiB
+        name: BOOT
+
+    - filesystem:
+        dev: /dev/disk/by-partlabel/BOOT
+        fstype: vfat
+        opts: -n BOOT
+
+    - parted:
+        number: 2
+        part_start: 1GiB
+        name: LINUX
+
+- when: encryption == 'disk'
+  block:
+    - shell: head -c 4096 /dev/urandom > /etc/keyfile creates=/etc/keyfile
+
+    - command: cryptsetup isLuks /dev/disk/by-partlabel/LINUX
+      register: check
+      ignore_errors: yes
+    - when: check.rc == 1
+      command: cryptsetup luksFormat /dev/disk/by-partlabel/Linux /etc/keyfile -q
+
+    - shell: dmsetup ls | grep ^root\s
+      register: check
+    - when: check.rc == 1
+      command: cryptsetup open /dev/disk/by-partlabel/LINUX root --key-file /etc/keyfile
+
+    - crypttab:
+        name: root
+        backing_device: /dev/disk/by-partlabel/LINUX
+        opts: discard
+        path: /etc/crypttab.initramfs
+        state: present
+        password: none
+
+    - lvg:
+        vg: rootvol
+        pvs: /dev/mapper/root
+
+    - lvol:
+        vg: rootvol
+        lv: swap
+        size: "{{ ansible_memory_mb.real.total }}"
+
+    - command: swapon /dev/rootvol/swap
+      ignore_errors: yes
+      register: check
+    - when: check.rc == 1
+      command: mkswap -L SWAP /dev/control/swap
+
+    - lvol:
+        vg: rootvol
+        lv: root
+        size: 100%FREE
+
+    - filesystem:
+        dev: /dev/rootvol/root
+        fstype: "{{ root_fstype }}"
+        opts: -L LINUX
+
+

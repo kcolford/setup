@@ -9,3 +9,5 @@ cmdline: ""
 bootloader_wait_secs: 2
 grub_install_args: ""
 sysrq: 1
+encryption: none
+root_fstype: btrfs
