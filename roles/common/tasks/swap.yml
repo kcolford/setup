@@ -16,11 +16,12 @@
 - when: encryption == 'disk'
   block:
     - command: swapon /dev/rootvol/swap
-      ignore_errors: yes
-      register: check
 
-    - when: check.rc == 1
-      command: mkswap /dev/rootvol/swap
+  rescue:
+    - command: mkswap -L SWAP /dev/rootvol/swap
 
-    - set_fact:
-        resume_device: /dev/rootvol/swap
+    - command: swapon /dev/rootvol/swap
+
+- when: encryption == 'disk'
+  set_fact:
+    resume_device: /dev/rootvol/swap

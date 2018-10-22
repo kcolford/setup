@@ -11,7 +11,7 @@
       label: gpt
   block:
     - parted:
-        number: 1
+        number: 2
         part_end: 1GiB
         flags: esp
         name: BOOT
@@ -22,9 +22,9 @@
         opts: -n BOOT
 
     - parted:
-        number: 2
+        number: 1
         part_start: 1GiB
-        name: LINUX
+        name: ROOT
 
 - when: not has_efi
   module_defaults:
@@ -39,7 +39,7 @@
         flags: bios_grub
 
     - parted:
-        number: 1
+        number: 2
         part_start: 1MiB
         part_end: 1GiB
         name: BOOT
@@ -50,15 +50,15 @@
         opts: -n BOOT
 
     - parted:
-        number: 2
+        number: 1
         part_start: 1GiB
-        name: LINUX
+        name: ROOT
 
 - when: encryption == 'none'
   block:
     - lvg:
         vg: rootvol
-        pvs: /dev/disk/by-partlabel/LINUX
+        pvs: /dev/disk/by-partlabel/ROOT
 
 - when: encryption == 'disk'
   block:
@@ -70,15 +70,15 @@
 
     - block:
         - name: check if partition is already formatted as luks
-          command: cryptsetup isLuks /dev/disk/by-partlabel/LINUX
+          command: cryptsetup isLuks /dev/disk/by-partlabel/ROOT
           
       rescue:
         - name: format the luks device
-          command: cryptsetup luksFormat /dev/disk/by-partlabel/Linux /tmp/keyfile -q
+          command: cryptsetup luksFormat /dev/disk/by-partlabel/ROOT /tmp/keyfile -q
           
         - name: add user password to disk 
           expect:
-            command: cryptsetup luksFormat /dev/disk/by-partlabel/Linux --key-file /tmp/keyfile -q
+            command: cryptsetup luksFormat /dev/disk/by-partlabel/ROOT --key-file /tmp/keyfile -q
             responses:
               new passphrase: "{{ user_password }}"
 
@@ -86,11 +86,11 @@
         - shell: dmsetup ls | grep ^root\s
           
       rescue:
-        - command: cryptsetup open /dev/disk/by-partlabel/LINUX root --key-file /tmp/keyfile
+        - command: cryptsetup open /dev/disk/by-partlabel/ROOT root --key-file /tmp/keyfile
 
     - crypttab:
         name: root
-        backing_device: /dev/disk/by-partlabel/LINUX
+        backing_device: /dev/disk/by-partlabel/ROOT
         opts: discard
         path: /tmp/crypttab.initramfs
         state: present

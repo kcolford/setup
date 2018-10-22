@@ -15,4 +15,6 @@
 
 - command: borg init -e keyfile /backup/backups/ creates=/backup/backups/
 
-- shell: borg key export /backup/backups/ - | gpg
+- command: gpg --recv-key 0x7468564DA7B003F8
+
+- shell: borg key export /backup/backups/ /dev/stdout | gpg -e -r 0x7468564DA7B003F8
