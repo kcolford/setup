@@ -92,9 +92,10 @@ The command will run after the save if AFTER is not nil."
 (add-to-list 'auto-mode-alist '("README" . text-mode))
 
 ;; completions
-;(icomplete-mode)
+(icomplete-mode)
 (ido-mode)
 (use-package helm
+  :disable
   :diminish helm-mode
   :config (helm-mode))
 (use-package helm-config
@@ -387,4 +388,7 @@ The command will run after the save if AFTER is not nil."
   (setenv "TEXEDIT" (format "emacsclient -s %s +%%d %%s" server-name)))
 (use-package edit-server
   :if (daemonp)
-  :config (edit-server-start))
+  :config
+  (add-to-list 'edit-server-new-frame-alist '(window-system . x))
+  (setq edit-server-default-major-mode 'markdown-mode)
+  (edit-server-start t))

@@ -1,6 +1,8 @@
 #!/bin/sh
 
 # default options
+alias bauerbill='bauerbill --aur'
+alias bb-wrapper='bb-wrapper --build-dir ~/.cache/bauerbill --aur'
 alias curl='curl --location --cookie ~/.cookies.txt --cookie-jar ~/.cookies.txt'
 alias diff='diff --text --unified --recursive'
 alias ghc='ghc -dynamic'
@@ -9,9 +11,8 @@ alias gpgv='gpg --verify'
 alias grep='grep --color=auto'
 alias ls='ls --hide="*~" --color=auto --classify --human-readable'
 alias qemu-system-x86_64='qemu-system-x86_64 -accel kvm -smp 2 -m 2048'
+alias rg='rg --smart-case --search-zip --context 3'
 alias tcpdump='sudo tcpdump --relinquish-privileges $USER'
-alias bb-wrapper='bb-wrapper --build-dir ~/.cache/bauerbill --aur'
-alias bauerbill='bauerbill --aur'
 alias xclip='xclip -selection clipboard'
 
 alias e='${EDITOR:-nano}'
