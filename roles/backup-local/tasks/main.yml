@@ -3,11 +3,13 @@
     state: present
     name: borg
 
-- file:
+- name: create mount point for backup directory
+  file:
     state: directory
     path: /backup
 
-- mount:
+- name: mount backup file system
+  mount:
     fstype: auto
     path: /backup
     src: /dev/disk/by-label/BACKUP
