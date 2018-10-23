@@ -25,6 +25,7 @@ path () {
 	    PATH="$1${PATH:+:$PATH}"
     esac
 }
+path ~/bin
 export PREFIX_="$HOME"/.local
 export CPATH="$PREFIX_/include${CPATH:+:$CPATH}"
 export LD_LIBRARY_PATH="$PREFIX_/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
