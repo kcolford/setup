@@ -3,6 +3,8 @@
   user:
     name: "{{ user_name }}"
   register: user
+  tags:
+    - always
 
 - name: install dotfiles
   block:
@@ -16,13 +18,13 @@
         - .bash_profile
         - .screenrc
       tags:
-        - basicdotfiles
+        - basic
 
     - name: copy full dotfiles
       copy:
         src: home/
       tags:
-        - fulldotfiles
+        - full
 
   module_defaults:
     copy:
