@@ -73,6 +73,7 @@ The command will run after the save if AFTER is not nil."
 (windmove-default-keybindings)
 (xterm-mouse-mode)
 (mouse-wheel-mode)
+(column-number-mode)
 (setq vc-handled-backends '(Git))
 (defalias 'yes-or-no-p 'y-or-n-p)
 (setq inhibit-startup-screen t)
@@ -90,6 +91,12 @@ The command will run after the save if AFTER is not nil."
 (define-save-minor-mode whitespace-cleanup)
 (add-to-list 'safe-local-variable-values '(buffer-file-coding-system . dos))
 (add-to-list 'auto-mode-alist '("README" . text-mode))
+(defun add-mode-line ()
+  "Add the current mode to the mode line of a file."
+  (interactive)
+  (add-file-local-variable-prop-line
+   'mode (intern (replace-regexp-in-string
+		  "-mode\\'" "" (symbol-name major-mode)))))
 
 ;; completions
 (icomplete-mode)
