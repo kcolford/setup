@@ -33,9 +33,8 @@ bindsym $mod+u exec emacs
 bindsym $mod+d exec dmenu_run
 bindsym $mod+x exec i3-dmenu-desktop
 
-bindsym --release $mod+p exec --no-startup-id sh -c 'date -Idate | xargs xdotool type --clearmodifiers'
-
-bindsym --release Print exec --no-startup-id scrot ~/Downloads/screenshot-%Y-%m-%d-%T.png
+bindsym --release Pause exec /bin/sh -c 'date -Idate | xargs xdotool type --clearmodifiers'
+bindsym --release Print exec scrot ~/Dropbox/downloads/screenshot-%Y-%m-%d-%T.png
 
 bindsym $mod+m exec transset-df -a -t
 bindsym $mod+comma exec transset-df -a --dec 0.1
