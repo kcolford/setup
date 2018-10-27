@@ -5,7 +5,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (helm magit-lfs company-clang protobuf-mode graphviz-dot-mode ecb semi direnv ggtags use-package-chords diminish edit-server lorem-ipsum auto-package-update yasnippet-snippets go-snippets js2-mode prettier-js less-css-mode flycheck use-package-ensure-system-package use-package pkgbuild-mode company-ghc yasnippet company-try-hard clang-format cmake-mode company company-auctex auctex company-c-headers company-dict company-flx company-go company-irony company-irony-c-headers company-shell company-statistics company-web csv-mode docker-compose-mode dockerfile-mode editorconfig elpy flycheck-irony gitconfig-mode gitignore-mode go-mode google google-c-style haskell-mode hc-zenburn-theme irony irony-eldoc json-mode magit markdown-mode projectile ssh-config-mode systemd web-mode yaml-mode))))
+    (magit helm company-clang protobuf-mode graphviz-dot-mode ecb semi direnv ggtags use-package-chords diminish edit-server lorem-ipsum auto-package-update yasnippet-snippets go-snippets js2-mode prettier-js less-css-mode flycheck use-package-ensure-system-package use-package pkgbuild-mode company-ghc yasnippet company-try-hard clang-format cmake-mode company company-auctex auctex company-c-headers company-dict company-flx company-go company-irony company-irony-c-headers company-shell company-statistics company-web csv-mode docker-compose-mode dockerfile-mode editorconfig elpy flycheck-irony gitconfig-mode gitignore-mode go-mode google google-c-style haskell-mode hc-zenburn-theme irony irony-eldoc json-mode markdown-mode projectile ssh-config-mode systemd web-mode yaml-mode))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -36,6 +36,7 @@ The command will run after the save if AFTER is not nil."
 
 ;; initialize packages
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
+			 ("melpa-stable" . "https://stable.melpa.org/packages/")
 			 ("gnu" . "http://elpa.gnu.org/packages/")))
 (package-initialize)
 
@@ -88,21 +89,30 @@ The command will run after the save if AFTER is not nil."
 (bind-key "C-x C-b" 'ibuffer)
 (bind-key "M-]" 'ffap)
 (bind-key "C-=" 'start-xterm)
+(bind-key "M-p" 'switch-to-prev-buffer)
+(bind-key "M-n" 'switch-to-next-buffer)
 (define-save-minor-mode whitespace-cleanup)
 (add-to-list 'safe-local-variable-values '(buffer-file-coding-system . dos))
 (add-to-list 'auto-mode-alist '("README" . text-mode))
+
 (defun add-mode-line ()
   "Add the current mode to the mode line of a file."
   (interactive)
   (add-file-local-variable-prop-line
    'mode (intern (replace-regexp-in-string
 		  "-mode\\'" "" (symbol-name major-mode)))))
+(defun global-disable-mode (mode-fn)
+  "Disable `MODE-FN' in ALL buffers."
+  (interactive "a")
+  (dolist (buffer (buffer-list))
+    (with-current-buffer buffer
+      (funcall mode-fn -1))))
 
 ;; completions
 (icomplete-mode)
 (ido-mode)
 (use-package helm
-  :disable
+  :disabled
   :diminish helm-mode
   :config (helm-mode))
 (use-package helm-config
@@ -136,7 +146,8 @@ The command will run after the save if AFTER is not nil."
 ;; tag search
 (use-package ggtags
   :diminish ggtags-mode
-  :hook ((c-mode c++-mode java-mode) . ggtags-mode))
+  ;; :hook ((c-mode c++-mode java-mode) . ggtags-mode)
+  )
 (req ripgrep)
 
 ;; some generic helpers
@@ -211,11 +222,6 @@ The command will run after the save if AFTER is not nil."
   (setq auto-package-update-delete-old-versions t)
   (setq auto-package-update-hide-results t)
   (auto-package-update-maybe))
-
-(use-package magit
-  :bind ("C-c C-v" . magit-status))
-(use-package magit-lfs
-  :after magit)
 
 (use-package company
   :diminish company-mode
@@ -328,7 +334,7 @@ The command will run after the save if AFTER is not nil."
 (with-eval-after-load 'tramp-sh
   (setq tramp-use-ssh-controlmaster-options nil)
   (setq tramp-histfile-override t)
-  (add-to-list 'tramp-remote-path 'tramp-own-path))
+  (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
 
 (use-package company-clang
   :ensure nil
@@ -338,7 +344,7 @@ The command will run after the save if AFTER is not nil."
   :hook (c-mode-common . google-set-c-style))
 (use-package irony
   ;; :ensure-system-package (cmake clang)
-  :hook (c-mode-common . irony-mode)
+  ;; :hook (c-mode-common . irony-mode)
   :init
   (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
 (use-package flycheck-irony

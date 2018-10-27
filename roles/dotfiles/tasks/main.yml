@@ -16,7 +16,11 @@
         - .inputrc
         - .bashrc
         - .bash_profile
+        - .aliases
         - .screenrc
+        - .config/git/config
+        - .config/git/ignore
+        - .ssh/config
       tags:
         - basic
 

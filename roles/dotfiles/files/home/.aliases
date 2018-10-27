@@ -27,7 +27,7 @@ alias LS='ls'
 
 alias igrep='grep --ignore-case'
 alias fu='fuck'
-alias tags='etags **.[ch]*'
+alias tags='etags **/*.[ch]*'
 alias magit='emacsclient -t --eval "(magit-status)"'
 alias rot13='tr "A-Za-z" "N-ZA-Mn-za-m"'
 alias shortcuts='grep ^bind ~/.config/i3/config | grep -v -e move -e workspace -e focus'
