@@ -30,6 +30,6 @@
     - update bootloader config
 
 - name: add efi install arguments
-  when: has_efi and efi_directory is defined
+  when: has_efi
   set_fact:
-    grub_install_args: --efi-directory {{ efi_directory }} {{ grub_install_args }}
+    grub_install_args: --efi-directory /boot {{ grub_install_args }}

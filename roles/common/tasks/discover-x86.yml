@@ -13,3 +13,13 @@
   set_fact:
     has_efi: "{{ efivars.stat.exists }}"
     cacheable: yes
+
+- name: check for luks root device used in full disk encryption
+  stat:
+    path: /dev/mapper/root
+  register: luksroot
+
+- name: enable encryption settings
+  set_fact:
+    encryption: disk
+  when: luksroot.stat.exists

@@ -3,19 +3,22 @@
   package:
     state: present
     name:
+      - sudo
       - linux-zen
       - linux-zen-headers
       - bash-completion
-      - moreutils
-      - pkgfile
       - ccid
       - opensc
       - libusb-compat
+
       - thefuck
       - udiskie
       - lesspipe
-      - sudo
+      - moreutils
+      - pkgfile
       - unzip
+      - unrar
+      - wget
 
 - name: configure smartcard
   block:
