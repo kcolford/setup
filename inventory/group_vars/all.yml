@@ -1,0 +1,3 @@
+user_name: kieran
+user_password: "{{ vault_user_password|default(omit) }}"
+remote_backup_password: "{{ vault_remote_backup_password|default(omit) }}"
