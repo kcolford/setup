@@ -1,6 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
+cmdline="quiet"
+
 case "$0" in
     sh|bash)
 	echo "Do not run this script through a pipe." >&2
@@ -12,22 +14,21 @@ if ! [ -b "$1" ]; then
     echo "First argument, OS disk, must be a block device to install to." >&2
     exit 1
 fi
-disk="$1"
 if [ -d /sys/firmware/efi/efivars/ ]; then
-    parted "$disk" mklabel gpt
-    parted "$disk" mkpart primary 0 1000
-    parted "$disk" name 1 BOOT
-    parted "$disk" set 1 esp on
-    parted "$disk" mkpart primary 1000 100%
-    parted "$disk" name 2 ROOT
+    parted "$1" mklabel gpt
+    parted "$1" mkpart primary 0 1000
+    parted "$1" name 1 BOOT
+    parted "$1" set 1 esp on
+    parted "$1" mkpart primary 1000 100%
+    parted "$1" name 2 ROOT
 else
-    parted "$disk" mklabel gpt
-    parted "$disk" mkpart primary 0 1
-    parted "$disk" set 1 bios_grub on
-    parted "$disk" mkpart primary 1 1000
-    parted "$disk" name 2 BOOT
-    parted "$disk" mkpart primary 1000 100%
-    parted "$disk" name 3 ROOT
+    parted "$1" mklabel gpt
+    parted "$1" mkpart primary 0 1
+    parted "$1" set 1 bios_grub on
+    parted "$1" mkpart primary 1 1000
+    parted "$1" name 2 BOOT
+    parted "$1" mkpart primary 1000 100%
+    parted "$1" name 3 ROOT
 fi
 
 # setup root volume group, either on a luks device or something else
@@ -36,15 +37,13 @@ case "$2" in
 	vgcreate rootvol /dev/disk/by-partlabel/ROOT
 	;;
     disk)
-	cp -a /etc/keyfile /tmp/ || head -c 4096 /dev/urandom > /tmp/keyfile
+	head -c 4096 /dev/urandom > /tmp/keyfile
 	if ! cryptsetup isLuks /dev/disk/by-partlabel/ROOT; then
 	    cryptsetup luksFormat /dev/disk/by-partlabel/ROOT /tmp/keyfile -q
-	    # cryptsetup luksAddKey /dev/disk/by-partlabel/ROOT --key-file /tmp/keyfile
 	fi
 	if ! dmsetup ls | grep -q '^root\s'; then
 	    cryptsetup open /dev/disk/by-partlabel/ROOT root --key-file /tmp/keyfile
 	fi
-	echo root /dev/disk/by-partlabel/ROOT none discard > /tmp/crypttab.initramfs
 	vgcreate rootvol /dev/mapper/root
 	;;
     *)
@@ -58,7 +57,8 @@ lvcreate -L "$(awk '$1=="MemTotal:"{print $2}' /proc/meminfo)"k rootvol -n swap
 lvcreate -l 100%FREE rootvol -n root
 
 # create root partition
-mkfs -t ext4 -n ROOT /dev/rootvol/root
+rootfs=ext4
+mkfs -t $rootfs -n ROOT /dev/rootvol/root
 mount /dev/disk/by-label/ROOT /mnt
 mkdir -m000 /mnt/boot
 mkfs -t vfat -n BOOT /dev/disk/by-partlabel/BOOT
@@ -69,11 +69,23 @@ case "$2" in
     disk)
 	mkswap -L SWAP /dev/rootvol/swap
 	swapon /dev/rootvol/swap
+	cmdline="$cmdline resume=/dev/rootvol/swap"
 	;;
 esac
 
 # final install step
-pacstrap /mnt base ansible
+pacstrap /mnt base grub efibootmgr ansible
 genfstab -U /mnt > /mnt/etc/fstab
-cp -aT /tmp/keyfile /mnt/etc/keyfile || true
-cp -aT /tmp/crypttab.initramfs /mnt/etc/crypttab.initramfs || true
+if [ -f /tmp/keyfile ]; then
+    uuid="$(cryptsetup luksUUID /dev/disk/by-partlabel/ROOT)"
+    install -D -m000 /tmp/keyfile /mnt/etc/keyfiles/"$uuid"
+    echo root UUID="$uuid" none discard > /etc/crypttab.initramfs
+fi
+sed -i "/GRUB_CMDLINE_LINUX_DEFAULT=/s/\".*\"/\"$cmdline\"/" /mnt/etc/default/grub
+arch-chroot /mnt mkinitcpio -P
+arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
+if [ -d /sys/firmware/efi/efivars/ ]; then
+    arch-chroot /mnt grub-install --efi-directory /boot
+else
+    arch-chroot /mnt grub-install "$1"
+fi

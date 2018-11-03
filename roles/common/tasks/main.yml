@@ -1,6 +1,4 @@
 ---
-- import_tasks: discover-x86.yml
-  when: ansible_architecture in ["i386", "x86_64"]
 - import_tasks: basic.yml
 - import_tasks: swap.yml
 - import_tasks: archlinux.yml
@@ -10,5 +8,3 @@
   tags:
     - update
     - never
-- import_tasks: grub.yml
-  when: ansible_architecture in ["i386", "x86_64"]
