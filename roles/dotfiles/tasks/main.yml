@@ -54,7 +54,6 @@
     path: "{{ user.home }}/{{ item }}"
     attributes: +C
     state: directory
-  when: root_fstype == 'btrfs'
   loop:
     - VirtualBox VMs
     - .local/share/libvirt/images
