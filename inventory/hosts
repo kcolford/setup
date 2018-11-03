@@ -9,10 +9,5 @@ geezer
 [desktop]
 hades
 
-[rescue]
-archlinux
-archiso
-archboot
-
 [uwaterloo.ca]
 *.uwaterloo.ca
