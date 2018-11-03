@@ -1,8 +1,0 @@
-[Unit]
-Description=Forward Journald logs to loggly
-
-[Service]
-ExecStartPre=-/bin/mkdir -pv /opt/loggly/journald-forwarder
-ExecStartPre=-/usr/bin/curl -L -o /opt/loggly/journald-forwarder/journald-forwarder https://github.com/uswitch/journald-forwarder/releases/download/v0.4/journald-forwarder
-ExecStartPre=-/bin/chmod +x /opt/loggly/journald-forwarder/journald-forwarder
-ExecStart=/opt/loggly/journald-forwarder/journald-forwarder -token 8010f6a0-d06a-4660-9738-00ed0d8169bb -tag journald-loggly
