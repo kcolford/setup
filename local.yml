@@ -1,18 +1,8 @@
 ---
-- hosts: desktops:laptops
-  vars_prompt:
-    - name: user_password
-      prompt: What is the user's password?
-      default: password
-      private: yes
-      
+- hosts: desktops laptops
   roles:
     - workstation
 
 - hosts: laptops
   roles:
     - battery-saver
-
-- hosts: test
-  roles:
-    - workstation
