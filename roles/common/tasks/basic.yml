@@ -32,17 +32,6 @@
     dest: /etc/localtime
     state: link
 
-- name: set sysrq control
-  sysctl:
-    name: kernel.sysrq
-    value: "{{ sysrq }}"
-
-- name: set the umask
-  lineinfile:
-    path: /etc/profile
-    line: umask {{ system_umask }}
-    regexp: ^umask
-
 - name: automatically trim the system
   service:
     name: fstrim.timer
