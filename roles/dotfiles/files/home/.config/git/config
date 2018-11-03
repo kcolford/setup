@@ -14,6 +14,10 @@
 	easy-commit = !git commit -m \"$(curl whatthecommit.com/index.txt)\"
 	git = !git
 	fixup = commit --fixup=HEAD
+	l = log --graph --decorate --oneline
+	la = l --all
+	com = commit
+	sh = !git config --list | grep insteadof
 [url "git://git.kernel.org/pub/scm/linux/kernel/git/"]
 	insteadOf = "kern:"
 [url "https://github.com/"]
@@ -47,3 +51,5 @@
 	autoupdate = true
 [commit]
 	verbose = 1
+[color]
+	ui = auto
