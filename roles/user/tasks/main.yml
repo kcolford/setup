@@ -45,23 +45,28 @@
     enabled: yes
   when: ansible_distribution == 'Archlinux'
 
-- name: configure sudo
-  copy:
-    src: sudo_config
-    dest: /etc/sudoers.d/
-    mode: 0440
-    validate: /usr/sbin/visudo -cf %s
-  become: yes
+- name: make sure configuring sudo doesn't cause everything to fail
+  block:
+    - name: configure sudo
+      copy:
+        src: sudo_config
+        dest: /etc/sudoers.d/
+        mode: 0440
+        validate: /usr/sbin/visudo -cf %s
+      become: yes
 
-- name: create admin user
-  user:
-    name: '{{ user_name }}'
-    groups: 
-      - wheel
-    update_password: on_create
-    password: "{{ user_password|password_hash('sha512', 65534|random(seed=user_password_salt)|string) }}"
+    - name: create admin user
+      user:
+        name: '{{ user_name }}'
+        groups: 
+          - wheel
+        update_password: on_create
+        password: "{{ user_password|default('password')|password_hash('sha512', 65534|random(seed=user_password_salt)|string) }}"
     
-- name: lock root account
-  user:
-    name: root
-    password_lock: yes
+    - name: lock root account
+      user:
+        name: root
+        password_lock: yes
+
+  rescue:
+    - meta: noop
