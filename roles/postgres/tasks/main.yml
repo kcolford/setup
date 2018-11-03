@@ -8,7 +8,6 @@
   file:
     path: "{{ postgres_data_directory }}"
     attributes: +C
-  when: root_fstype == 'btrfs'
 
 - name: initialize database directory
   command: initdb -A pam -D {{ postgres_data_directory }}
