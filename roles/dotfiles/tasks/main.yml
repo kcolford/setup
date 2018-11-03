@@ -58,3 +58,7 @@
     - VirtualBox VMs
     - .local/share/libvirt/images
 
+- name: compile and update .emacs
+  command: emacs --batch -f install-and-update-packages
+  become: yes
+  become_user: "{{ user.name }}"

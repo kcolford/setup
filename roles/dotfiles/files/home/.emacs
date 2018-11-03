@@ -5,7 +5,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (magit helm company-clang protobuf-mode graphviz-dot-mode ecb semi direnv ggtags use-package-chords diminish edit-server lorem-ipsum auto-package-update yasnippet-snippets go-snippets js2-mode prettier-js less-css-mode flycheck use-package-ensure-system-package use-package pkgbuild-mode company-ghc yasnippet company-try-hard clang-format cmake-mode company company-auctex auctex company-c-headers company-dict company-flx company-go company-irony company-irony-c-headers company-shell company-statistics company-web csv-mode docker-compose-mode dockerfile-mode editorconfig elpy flycheck-irony gitconfig-mode gitignore-mode go-mode google google-c-style haskell-mode hc-zenburn-theme irony irony-eldoc json-mode markdown-mode projectile ssh-config-mode systemd web-mode yaml-mode))))
+    (rust-mode magit helm company-clang protobuf-mode graphviz-dot-mode ecb semi direnv ggtags use-package-chords diminish edit-server lorem-ipsum auto-package-update yasnippet-snippets go-snippets js2-mode prettier-js less-css-mode flycheck use-package-ensure-system-package use-package pkgbuild-mode company-ghc yasnippet company-try-hard clang-format cmake-mode company company-auctex auctex company-c-headers company-dict company-flx company-go company-irony company-irony-c-headers company-shell company-statistics company-web csv-mode docker-compose-mode dockerfile-mode editorconfig elpy flycheck-irony gitconfig-mode gitignore-mode go-mode google google-c-style haskell-mode hc-zenburn-theme irony irony-eldoc json-mode markdown-mode projectile ssh-config-mode systemd web-mode yaml-mode))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -41,15 +41,16 @@ The command will run after the save if AFTER is not nil."
 (package-initialize)
 
 ;; install basic files on first run
-(let ((firstrun (concat user-emacs-directory "firstrun")))
-  (unless (file-readable-p firstrun)
-    (package-refresh-contents)
-    (let ((oldfunc (symbol-function 'y-or-n-p)))
-      (fset 'y-or-n-p '(lambda (&rest args) t))
-      (package-install-selected-packages)
-      (package-install 'use-package)
-      (fset 'y-or-n-p oldfunc))
-    (with-temp-buffer (write-file firstrun))))
+(defun install-and-update-packages ()
+  "Install and update all packages."
+  (interactive)
+  (package-refresh-contents)
+  (let ((oldfunc (symbol-function 'y-or-n-p)))
+    (fset 'y-or-n-p '(lambda (&rest args) t))
+    (package-install-selected-packages)
+    (package-install 'use-package)
+    (fset 'y-or-n-p oldfunc))
+  (auto-package-update-now))
 
 ;; setup use-package
 (eval-when-compile
@@ -92,6 +93,7 @@ The command will run after the save if AFTER is not nil."
 (bind-key "M-p" 'switch-to-prev-buffer)
 (bind-key "M-n" 'switch-to-next-buffer)
 (define-save-minor-mode whitespace-cleanup)
+(add-hook 'prog-mode-hook 'whitespace-cleanup-mode)
 (add-to-list 'safe-local-variable-values '(buffer-file-coding-system . dos))
 (add-to-list 'auto-mode-alist '("README" . text-mode))
 
@@ -220,8 +222,7 @@ The command will run after the save if AFTER is not nil."
 (use-package auto-package-update
   :config
   (setq auto-package-update-delete-old-versions t)
-  (setq auto-package-update-hide-results t)
-  (auto-package-update-maybe))
+  (setq auto-package-update-hide-results t))
 
 (use-package company
   :diminish company-mode
