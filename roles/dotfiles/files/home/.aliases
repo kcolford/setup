@@ -11,7 +11,7 @@ alias gpgv='gpg --verify'
 alias grep='grep --color=auto'
 alias ls='ls --hide="*~" --color=auto --classify --human-readable'
 alias qemu-system-x86_64='qemu-system-x86_64 -accel kvm -smp 2 -m 2048'
-alias rg='rg --smart-case --search-zip --context 3'
+alias rg='rg --smart-case --search-zip'
 alias tcpdump='sudo tcpdump --relinquish-privileges $USER'
 alias xclip='xclip -selection clipboard'
 
