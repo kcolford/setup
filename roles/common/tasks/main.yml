@@ -1,5 +1,6 @@
 ---
 - import_tasks: basic.yml
+- import_tasks: luks.yml
 - import_tasks: archlinux.yml
   when: ansible_distribution == 'Archlinux'
 - import_tasks: btrfs.yml

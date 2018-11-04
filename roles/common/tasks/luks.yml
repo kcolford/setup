@@ -1,0 +1,5 @@
+- name: use user password to unlock luks devices
+  command: cryptsetup luksAddKey /dev/disk/by-uuid/{{ ansible_local.encrypted_disk }} {{ user_password }} --key-file /etc/keyfiles/{{ ansible_local.encrypted_disk }}
+  when:
+    - ansible_local.encrypted_disk is defined
+    - user_password is defined

@@ -76,10 +76,12 @@ esac
 # final install step
 pacstrap /mnt base grub efibootmgr ansible
 genfstab -U /mnt > /mnt/etc/fstab
+mkdir /mnt/etc/ansible/facts.d/
 if [ -f /tmp/keyfile ]; then
     uuid="$(cryptsetup luksUUID /dev/disk/by-partlabel/ROOT)"
     install -D -m000 /tmp/keyfile /mnt/etc/keyfiles/"$uuid"
     echo root UUID="$uuid" none discard > /mnt/etc/crypttab.initramfs
+    echo "\"$uuid\"" > /mnt/etc/ansible/facts.d/encrypted_disk.fact
 fi
 sed -i "/GRUB_CMDLINE_LINUX_DEFAULT=/s/\".*\"/\"$cmdline\"/" /mnt/etc/default/grub
 arch-chroot /mnt mkinitcpio -P
