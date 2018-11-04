@@ -6,4 +6,5 @@
 - import_tasks: networkmanager.yml
 - import_tasks: office.yml
 - import_tasks: sound.yml
+- import_tasks: bluetooth.yml
 - import_tasks: spellchecking.yml

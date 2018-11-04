@@ -1,0 +1,18 @@
+- name: install bluetooth packages
+  package:
+    name:
+      - bluez
+      - bluez-utils
+      - blueman
+      - pulseaudio-bluetooth
+
+- name: enable bluetooth service
+  service:
+    enabled: yes
+    name: bluetooth
+
+- name: start bluetooth service
+  service:
+    state: started
+    name: bluetooth
+  ignore_errors: yes
