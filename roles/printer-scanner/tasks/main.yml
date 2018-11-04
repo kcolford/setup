@@ -7,21 +7,17 @@
       - foomatic-db
       - sane
     state: present
-      
-- name: prevent become from killing everything
-  block:
-    - name: allow wheel group to control the printing service
-      lineinfile:
-        path: /etc/cups/cups-files.conf
-        regexp: ^SystemGroup
-        line: SystemGroup sys root wheel
-      become: yes
-      notify:
-        - reload print service
 
-  rescue:
-    - meta: noop
-    
+- name: allow wheel group to control the printing service
+  lineinfile:
+    path: /etc/cups/cups-files.conf
+    regexp: ^SystemGroup
+    line: SystemGroup sys root wheel
+  become: yes
+  notify:
+    - reload print service
+  ignore_errors: yes
+
 - name: enable the printing service
   service:
     name: org.cups.cupsd
@@ -31,4 +27,4 @@
   service:
     name: org.cups.cupsd
     state: started
-
+  ignore_errors: yes
