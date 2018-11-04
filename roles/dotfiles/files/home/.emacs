@@ -94,6 +94,7 @@ The command will run after the save if AFTER is not nil."
 (bind-key "M-n" 'switch-to-next-buffer)
 (define-save-minor-mode whitespace-cleanup)
 (add-hook 'prog-mode-hook 'whitespace-cleanup-mode)
+(add-hook 'text-mode-hook 'whitespace-cleanup-mode)
 (add-to-list 'safe-local-variable-values '(buffer-file-coding-system . dos))
 (add-to-list 'auto-mode-alist '("README" . text-mode))
 
