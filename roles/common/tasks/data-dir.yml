@@ -1,0 +1,13 @@
+- name: setup data disk
+  when: "'DATA' in ansible_device_links.labels.values()|flatten"
+  block:
+    - name: create mount point for data
+      file:
+        state: directory
+        path: /data/
+
+    - name: mount the directory
+      mount:
+        path: /data/
+        src: /dev/disk/by-label/DATA
+        state: mounted

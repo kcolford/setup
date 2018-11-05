@@ -1,0 +1,6 @@
+[Unit]
+Description=Perform backups locally.
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/backup-local

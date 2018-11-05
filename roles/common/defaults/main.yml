@@ -4,3 +4,5 @@ system_locale: en_{{ country_code }}
 system_encoding: UTF-8
 system_timezone: America/Toronto
 system_keymap: emacs
+
+borg_repo: /data/backup

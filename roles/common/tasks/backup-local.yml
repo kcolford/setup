@@ -1,0 +1,56 @@
+- name: setup local backup repo
+  when:
+    - archives is defined
+    - archives[inventory_hostname] is defined
+  block:
+    - name: install borg
+      package:
+        state: present
+        name: borg
+
+    - file:
+        state: file
+        path: "{{ borg_repo }}"
+
+    - name: setup backup archive
+      command: borg init -e repokey {{ borg_repo }}
+      args:
+        creates: "{{ borg_repo }}"
+      environment:
+        BORG_PASSPHRASE: "{{ archives[inventory_hostname] }}"
+
+    - name: configure stored backup password
+      copy:
+        dest: /etc/conf.d/backup-local
+        mode: 0600
+        content: |
+          BORG_PASSPHRASE={{ archives[inventory_hostname] }}
+          BORG_REPO={{ borg_repo }}
+
+    - name: configure regular time based backups
+      copy:
+        src: "{{ item }}"
+        dest: /etc/systemd/system/
+      loop:
+        - backup-local.service
+        - backup-local.timer
+
+    - name: install backup-local script
+      copy:
+        src: backup-local
+        dest: /usr/local/bin/
+
+    - name: reload systemd
+      systemd:
+        daemon_reload: yes
+
+    - name: enable local backups
+      service:
+        enabled: yes
+        name: backup-local.timer
+
+    - name: start local backups
+      service:
+        state: started
+        name: backup-local.timer
+      ignore_errors: yes

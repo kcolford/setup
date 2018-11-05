@@ -36,3 +36,12 @@
   service:
     name: fstrim.timer
     enabled: yes
+
+- name: fix mount options
+  loop: "{{ ansible_mounts }}"
+  mount:
+    opts: noatime,nofail,{{ item.options }}
+    fstype: auto
+    path: "{{ item.mount }}"
+    state: mounted
+    src: UUID={{ item.uuid }}

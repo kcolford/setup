@@ -1,0 +1,17 @@
+#!/bin/bash
+set -euo pipefail
+
+[ "$BORG_REPO" ] || . /etc/conf.d/backup-local
+
+borg init -e repokey || true
+borg create -ps					\
+     -e '/root/.cache/*'			\
+     -e '/home/*/.cache/*'			\
+     -e '/var/cache/*'				\
+     -e '/var/tmp/*'				\
+     ::{hostname}.full.{now}			\
+     /home					\
+     /root					\
+     /var					\
+     /etc
+borg prune -ps -H 24 -d 7 -w 5 -m 12 -y 10 --prefix {hostname}.full.
