@@ -132,6 +132,9 @@ The command will run after the save if AFTER is not nil."
   :config
   (google-this-mode))
 
+(use-package mu4e
+  :ensure nil)
+
 (req haskell-mode)
 
 (req json-mode)

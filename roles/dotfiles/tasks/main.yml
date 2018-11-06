@@ -1,4 +1,20 @@
 ---
+- name: install packages for the user
+  ignore_errors: yes
+  package:
+    state: present
+    name:
+      - thefuck
+      - udiskie
+      - lesspipe
+      - moreutils
+      - unzip
+      - unrar
+      - wget
+      - emacs
+      - mu
+      - offlineimap
+
 - name: lookup user info
   user:
     name: "{{ user_name }}"
@@ -21,6 +37,9 @@
         - .config/git/config
         - .config/git/ignore
         - .ssh/config
+        - .emacs
+        - .emacs_bash
+
       tags:
         - basic
 

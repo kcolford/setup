@@ -7,6 +7,7 @@
       - mlocate
       - openssh
       - x11-ssh-askpass
+      - sshpass
       - pacman-contrib
       - ripgrep
       - sshfs
@@ -27,7 +28,7 @@
       - docker
       - docker-compose
       - docker-machine
-      
+
       - emacs
       - xclip
       - shellcheck
@@ -42,7 +43,7 @@
       - prettier
       # - bear
       # - gocode-git
-    
+
 - name: enable updatedb to periodically run
   service:
     name: updatedb.timer
