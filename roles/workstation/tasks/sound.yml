@@ -5,3 +5,6 @@
     name:
       - pulseaudio
       - pulseaudio-alsa
+      - pavucontrol
+      - pamixer
+      - pasystray
