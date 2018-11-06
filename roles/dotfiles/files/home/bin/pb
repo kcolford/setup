@@ -1,0 +1,4 @@
+#!/bin/bash
+set -euo pipefail
+
+curl -F "c=@${1:--}" "https://ptpb.pw/?u=1"

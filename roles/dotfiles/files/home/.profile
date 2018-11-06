@@ -3,15 +3,10 @@
 export NAME="Kieran Colford"
 export EMAIL="kieran@kcolford.com"
 
-if [ -x /usr/bin/emacs ]; then
-    export ALTERNATE_EDITOR="emacs -Q"
-    export EDITOR="emacsclient -nw"
-fi
+export ALTERNATE_EDITOR="emacs -Q"
+export EMACS_SERVER_NAME=server
 export PAGER=less
 export LESS=FRSXi
-export EDITOR="${EDITOR:-nano}"
-export VISUAL="$EDITOR"
-export TEXEDIT="$EDITOR +%d %s"
 export DIFFPROG=diff
 
 #export SSH_AUTH_SOCK="${SSH_AUTH_SOCK:-$(gpgconf --list-dirs agent-ssh-socket)}"
@@ -19,9 +14,9 @@ export SSH_AUTH_SOCK="${SSH_AUTH_SOCK:-$XDG_RUNTIME_DIR/ssh-agent.socket}"
 
 path () {
     case ":$PATH:" in
-        *:"$1":*)
-            ;;
-        *)
+	*:"$1":*)
+	    ;;
+	*)
 	    PATH="$1${PATH:+:$PATH}"
     esac
 }

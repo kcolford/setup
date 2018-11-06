@@ -104,12 +104,20 @@ The command will run after the save if AFTER is not nil."
   (add-file-local-variable-prop-line
    'mode (intern (replace-regexp-in-string
 		  "-mode\\'" "" (symbol-name major-mode)))))
+
 (defun global-disable-mode (mode-fn)
   "Disable `MODE-FN' in ALL buffers."
   (interactive "a")
   (dolist (buffer (buffer-list))
     (with-current-buffer buffer
       (funcall mode-fn -1))))
+
+(add-to-list 'display-buffer-alist '("\\*xterm\\*" display-buffer-no-window (allow-no-window . t)))
+(defun start-xterm ()
+  "Start xterm in local directory."
+  (interactive)
+  (let ((buf (generate-new-buffer-name "*xterm*")))
+    (async-shell-command "xterm" buf buf)))
 
 ;; completions
 (icomplete-mode)
@@ -155,12 +163,6 @@ The command will run after the save if AFTER is not nil."
   ;; :hook ((c-mode c++-mode java-mode) . ggtags-mode)
   )
 (req ripgrep)
-
-;; some generic helpers
-(defun start-xterm ()
-  "Start xterm in local directory."
-  (interactive)
-  (start-process "xterm" nil "xterm"))
 
 ;; prevent annoying windows from popping up out of reach
 (setq display-buffer-base-action '((display-buffer-use-some-window display-buffer-same-window) (nil)))
@@ -397,13 +399,11 @@ The command will run after the save if AFTER is not nil."
   :config
   ;; every emacs is an emacs server so that local shells use the
   ;; current editor to edit
-  (unless (daemonp)
+  (if (daemonp)
+      (setq server-name (getenv "EMACS_SERVER_NAME"))
     (setq server-name (format "server-%s" (emacs-pid)))
-    (server-start))
-  ;; (setenv "PAGER" "cat")
-  (setenv "EDITOR" (format "emacsclient -nw -s %s" server-name))
-  (setenv "VISUAL" (format "emacsclient -c -s %s" server-name))
-  (setenv "TEXEDIT" (format "emacsclient -s %s +%%d %%s" server-name)))
+    (setenv "EMACS_SERVER_NAME" server-name)
+    (server-start)))
 (use-package edit-server
   :if (daemonp)
   :config

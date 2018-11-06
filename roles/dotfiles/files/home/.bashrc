@@ -8,7 +8,7 @@ if [ "$TERM" != "dumb" ]; then
 fi
 
 # shell features
-# 
+#
 shopt -s autocd
 shopt -s cdspell
 shopt -s checkhash
