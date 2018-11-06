@@ -28,14 +28,6 @@ alias sl='ls'
 alias LS='ls'
 alias open='xdg-open'
 
-encfs() {
-    if [[ $# != 2 ]] || [[ "$1" = -* ]] || [[ "$2" = -* ]]; then
-	command encfs "$@"
-    else
-	command encfs "$(realpath "$1")" "$(realpath "$2")"
-    fi
-}
-
 if [ -x /usr/bin/emacs ]; then
     export EDITOR="emacsclient -nw -s $EMACS_SERVER_NAME"
 fi
