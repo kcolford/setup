@@ -34,3 +34,9 @@ fi
 export EDITOR="${EDITOR:-nano}"
 export VISUAL="$EDITOR"
 export TEXEDIT="$EDITOR +%d %s"
+
+if [ "$TERM" = "dumb" ]; then
+    export PAGER=cat
+else
+    export PAGER=less
+fi

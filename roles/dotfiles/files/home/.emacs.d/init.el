@@ -1,3 +1,8 @@
+;;; init.el -- emacs initialization
+
+;;; Commentary:
+
+;;; Code:
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -410,3 +415,7 @@ The command will run after the save if AFTER is not nil."
   (add-to-list 'edit-server-new-frame-alist '(window-system . x))
   (setq edit-server-default-major-mode 'markdown-mode)
   (edit-server-start t))
+
+
+(provide 'init)
+;;; init.el ends here

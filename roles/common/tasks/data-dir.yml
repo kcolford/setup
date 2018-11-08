@@ -11,3 +11,4 @@
         path: /data/
         src: /dev/disk/by-label/DATA
         state: mounted
+        fstype: auto

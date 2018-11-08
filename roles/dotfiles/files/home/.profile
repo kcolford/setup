@@ -22,7 +22,6 @@ path () {
 	    PATH="$1${PATH:+:$PATH}"
     esac
 }
-path ~/bin
 export PREFIX_="$HOME"/.local
 export CPATH="$PREFIX_/include${CPATH:+:$CPATH}"
 export LD_LIBRARY_PATH="$PREFIX_/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
@@ -38,6 +37,8 @@ export PYTHONUSERBASE="$PREFIX_"
 path "$PYTHONUSERBASE"/bin
 export GEM_HOME="$PREFIX_"
 path "$GEM_HOME"/bin
+
+path ~/bin
 unset path
 
 systemctl --user import-environment

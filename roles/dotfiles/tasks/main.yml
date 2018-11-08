@@ -1,20 +1,4 @@
 ---
-- name: install packages for the user
-  ignore_errors: yes
-  package:
-    state: present
-    name:
-      - thefuck
-      - udiskie
-      - lesspipe
-      - moreutils
-      - unzip
-      - unrar
-      - wget
-      - emacs
-      - mu
-      - offlineimap
-
 - name: lookup user info
   user:
     name: "{{ user_name }}"
@@ -23,39 +7,13 @@
     - always
 
 - name: install dotfiles
-  block:
-    - name: copy just portable files
-      copy:
-        src: home/{{ item }}
-      loop:
-        - .profile
-        - .inputrc
-        - .bashrc
-        - .bash_profile
-        - .aliases
-        - .screenrc
-        - .config/git/config
-        - .config/git/ignore
-        - .ssh/config
-        - .emacs
-        - .emacs_bash
-
-      tags:
-        - basic
-
-    - name: copy full dotfiles
-      copy:
-        src: home/
-      tags:
-        - full
-
-  module_defaults:
-    copy:
-      dest: "{{ user.home }}/"
-      owner: '{{ user.name }}'
-      group: '{{ user.group }}'
-      force: yes
-      local_follow: no
+  copy:
+    src: home/
+    dest: "{{ user.home }}/"
+    owner: '{{ user.name }}'
+    group: '{{ user.group }}'
+    force: yes
+    local_follow: no
   tags:
     - dotfiles
 
@@ -77,7 +35,35 @@
     - VirtualBox VMs
     - .local/share/libvirt/images
 
-- name: compile and update .emacs
-  command: emacs --batch -f install-and-update-packages
+- name: install packages for the user
+  ignore_errors: yes
+  package:
+    state: present
+    name:
+      - thefuck
+      - udiskie
+      - lesspipe
+      - moreutils
+      - unzip
+      - unrar
+      - wget
+      - emacs
+      - mu
+      - offlineimap
+      - lastpass-cli
+
+      - npm
+
+- name: perform installation and update tasks as user
   become: yes
   become_user: "{{ user.name }}"
+  module_defaults:
+    npm:
+      state: latest
+      global: yes
+    command:
+      chdir: "{{ user.home }}"
+  block:
+    - command: emacs --batch -l .emacs -f auto-package-update-now
+    - npm:
+        name: '@bitwarden/cli'
