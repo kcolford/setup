@@ -51,6 +51,7 @@
       - mu
       - offlineimap
       - lastpass-cli
+      - trash-cli
 
       - npm
 
