@@ -1,18 +1,6 @@
 #!/bin/sh
 
-export NAME="Kieran Colford"
-export EMAIL="kieran@kcolford.com"
-
-export ALTERNATE_EDITOR="emacs -Q"
-export EMACS_SERVER_NAME=server
-export PAGER=less
-export LESS=FRSXi
-export DIFFPROG=diff
-
 . ~/.aliases
-
-#export SSH_AUTH_SOCK="${SSH_AUTH_SOCK:-$(gpgconf --list-dirs agent-ssh-socket)}"
-export SSH_AUTH_SOCK="${SSH_AUTH_SOCK:-$XDG_RUNTIME_DIR/ssh-agent.socket}"
 
 path () {
     case ":$PATH:" in

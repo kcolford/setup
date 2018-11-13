@@ -12,7 +12,9 @@ alias grep='grep --color=auto'
 alias ls='ls --hide="*~" --color=auto --classify --human-readable'
 alias qemu-system-x86_64='qemu-system-x86_64 -accel kvm -smp 2 -m 2048'
 alias rg='rg --smart-case --search-zip'
-alias rm='trash'
+if [ -x /usr/bin/trash ]; then
+    alias rm='trash'
+fi
 alias tcpdump='sudo tcpdump --relinquish-privileges $USER'
 alias xclip='xclip -selection clipboard'
 
@@ -29,12 +31,24 @@ alias sl='ls'
 alias LS='ls'
 alias open='xdg-open'
 
+export NAME="Kieran Colford"
+export EMAIL="kieran@kcolford.com"
+
+export ALTERNATE_EDITOR="emacs -Q"
+export EMACS_SERVER_NAME=server
+export PAGER=less
+export LESS=FRSXi
+export DIFFPROG=diff
+
 if [ -x /usr/bin/emacs ]; then
     export EDITOR="emacsclient -nw -s $EMACS_SERVER_NAME"
 fi
 export EDITOR="${EDITOR:-nano}"
 export VISUAL="$EDITOR"
 export TEXEDIT="$EDITOR +%d %s"
+
+#export SSH_AUTH_SOCK="${SSH_AUTH_SOCK:-$(gpgconf --list-dirs agent-ssh-socket)}"
+export SSH_AUTH_SOCK="${SSH_AUTH_SOCK:-$XDG_RUNTIME_DIR/ssh-agent.socket}"
 
 if [ "$TERM" = "dumb" ]; then
     export PAGER=cat
