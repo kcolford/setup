@@ -29,7 +29,7 @@ import() {
     for file; do
 	if [[ -r "$file" ]]; then
 	    # shellcheck disable=SC1090
-	    source "$file"
+	    . "$file" &
 	fi
     done
 }
