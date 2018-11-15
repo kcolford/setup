@@ -22,6 +22,9 @@ shopt -s mailwarn
 shopt -s no_empty_cmd_completion
 HISTCONTROL=ignoreboth
 
+# key sequences
+bind -x '"\C-]":term'
+
 import() {
     for file; do
 	if [[ -r "$file" ]]; then
@@ -62,7 +65,7 @@ fi
 PS1="\\[$RED\\]\${?/#0/\\[$GREEN\\]}$PS1\\[$RESET\\]"
 
 # shellcheck disable=SC1090
-. "$HOME"/.aliases
+. ~/.aliases
 
 import /{etc,usr{,/local}/share/bash-completion}/bash_completion
 import /usr/share/doc/pkgfile/command-not-found.bash
