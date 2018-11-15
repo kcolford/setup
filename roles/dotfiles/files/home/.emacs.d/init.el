@@ -94,7 +94,7 @@ The command will run after the save if AFTER is not nil."
 (bind-key "C-\\" 'bury-buffer)
 (bind-key "C-x C-b" 'ibuffer)
 (bind-key "M-]" 'ffap)
-(bind-key "C-=" 'start-xterm)
+(bind-key "C-=" 'start-new-term)
 (bind-key "M-p" 'switch-to-prev-buffer)
 (bind-key "M-n" 'switch-to-next-buffer)
 (define-save-minor-mode whitespace-cleanup)
@@ -117,12 +117,13 @@ The command will run after the save if AFTER is not nil."
     (with-current-buffer buffer
       (funcall mode-fn -1))))
 
-(add-to-list 'display-buffer-alist '("\\*xterm\\*" display-buffer-no-window (allow-no-window . t)))
-(defun start-xterm ()
+(add-to-list 'display-buffer-alist '("\\*new-term\\*" display-buffer-no-window (allow-no-window . t)))
+(defun start-new-term ()
   "Start xterm in local directory."
   (interactive)
-  (let ((buf (generate-new-buffer-name "*xterm*")))
-    (async-shell-command "xterm" buf buf)))
+  (let ((buf (generate-new-buffer-name "*new-term*"))
+	(prog (string-remove-suffix "-256color" (getenv "TERM"))))
+    (async-shell-command prog buf buf)))
 
 ;; completions
 (icomplete-mode)
