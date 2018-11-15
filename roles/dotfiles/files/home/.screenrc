@@ -14,8 +14,5 @@ startup_message off
 vbell off
 
 # start windows at 1
-bind c screen 1
-bind ^c screen 1
 bind 0 select 10
-screen 1
 bind '`' screen 0
