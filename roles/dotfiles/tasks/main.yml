@@ -17,12 +17,22 @@
   tags:
     - dotfiles
 
+- name: install binaries
+  file:
+    path: "{{ user.home }}/bin/"
+    mode: +x
+    recurse: yes
+  tags:
+    - dotfiles
+
 - name: secure gpg directory
   file:
     path: "{{ user.home }}/.gnupg"
     mode: og-rwx
     recurse: yes
-  tags: gpg
+  tags:
+    - dotfiles
+
 
 - name: mark virtual machine directories as nocow
   file:
