@@ -33,8 +33,8 @@
   tags:
     - dotfiles
 
-
 - name: mark virtual machine directories as nocow
+  ignore_errors: yes
   file:
     owner: "{{ user.name }}"
     group: "{{ user.group }}"
@@ -63,7 +63,15 @@
       - lastpass-cli
       - trash-cli
 
+- name: install npm
+  ignore_errors: yes
+  package:
+    state: present
+    name:
       - npm
+  register: installers
+  tags:
+    - installers
 
 - name: perform installation and update tasks as user
   become: yes
@@ -76,5 +84,7 @@
       chdir: "{{ user.home }}"
   block:
     - command: emacs --batch -l .emacs -f auto-package-update-now
-    - npm:
+      ignore_errors: yes
+    - when: not installers.failed
+      npm:
         name: '@bitwarden/cli'
