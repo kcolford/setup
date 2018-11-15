@@ -29,7 +29,7 @@ import() {
     for file; do
 	if [[ -r "$file" ]]; then
 	    # shellcheck disable=SC1090
-	    . "$file" &
+	    . "$file"
 	fi
     done
 }
@@ -70,6 +70,6 @@ PS1="\\[$RED\\]\${?/#0/\\[$GREEN\\]}$PS1\\[$RESET\\]"
 import /{etc,usr{,/local}/share/bash-completion}/bash_completion
 import /usr/share/doc/pkgfile/command-not-found.bash
 try_eval direnv hook bash &
-try_eval hub alias -s
+try_eval hub alias -s &
 try_eval thefuck --alias &
 disown -a
