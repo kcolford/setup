@@ -9,6 +9,7 @@
     path: /etc/vconsole.conf
     line: KEYMAP={{ system_keymap }}
     regexp: ^KEYMAP
+    create: yes
 
 - name: setup system locale
   locale_gen:
@@ -19,12 +20,14 @@
     path: /etc/locale.conf
     line: LANG={{ system_locale }}.{{ system_encoding }}
     regexp: ^LANG=
+    create: yes
 
 - name: set console font
   lineinfile:
     path: /etc/vconsole.conf
     line: FONT=Lat2-Terminus16
     regexp: ^FONT
+    create: yes
 
 - name: set timezone
   file:
