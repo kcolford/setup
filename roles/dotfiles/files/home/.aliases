@@ -19,7 +19,7 @@ alias tcpdump='sudo tcpdump --relinquish-privileges $USER'
 alias xclip='xclip -selection clipboard'
 
 alias e='${EDITOR:-nano}'
-alias em='emacs -Q'
+alias em='$ALTERNATE_EDITOR'
 alias fu='fuck'
 alias igrep='grep --ignore-case'
 alias la='ls -a'
@@ -34,7 +34,7 @@ alias open='xdg-open'
 export NAME="Kieran Colford"
 export EMAIL="kieran@kcolford.com"
 
-export ALTERNATE_EDITOR="emacs -Q"
+export ALTERNATE_EDITOR="emacs -q"
 export EMACS_SERVER_NAME=server
 export PAGER=less
 export LESS=FRSXi
