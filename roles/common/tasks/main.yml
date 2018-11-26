@@ -4,7 +4,7 @@
 - import_tasks: data-dir.yml
 - import_tasks: archlinux.yml
   when: ansible_distribution == 'Archlinux'
-- import_tasks: btrfs.yml
+#- import_tasks: btrfs.yml
 - import_tasks: backup-local.yml
 - import_tasks: update.yml
   tags:

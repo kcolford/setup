@@ -62,3 +62,5 @@
 
   rescue:
     - meta: noop
+
+- import_tasks: ecryptfs.yml

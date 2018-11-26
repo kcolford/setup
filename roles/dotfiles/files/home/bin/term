@@ -1,16 +1,14 @@
 #!/bin/bash
-set -euo pipefail
+set -eo pipefail
 
-case "$(basename "$(basename "$(basename "$TERM" color)" 256)" -)" in
-    xterm)
-	term=xterm
-	;;
-    screen)
-	term=screen
-	;;
-    *)
-	exit 1
-	;;
-esac
+if false; then
+    :
+elif [ "$STY" ]; then
+    term=screen
+elif [ "$DISPLAY" ]; then
+    term=xterm
+else
+    exit 1
+fi
 
 nohup $term > /dev/null 2>&1 &

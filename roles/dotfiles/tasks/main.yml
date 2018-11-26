@@ -62,16 +62,10 @@
       - offlineimap
       - lastpass-cli
       - trash-cli
-
-- name: install npm
-  ignore_errors: yes
-  package:
-    state: present
-    name:
-      - npm
-  register: installers
-  tags:
-    - installers
+      - fzf
+      - fd
+      - ripgrep
+      - bat
 
 - name: perform installation and update tasks as user
   become: yes
@@ -83,8 +77,5 @@
     command:
       chdir: "{{ user.home }}"
   block:
-    - command: emacs --batch -l .emacs -f auto-package-update-now
+    - command: emacs --batch -l .emacs.d/init.el -f auto-package-update-now
       ignore_errors: yes
-    - when: not installers.failed
-      npm:
-        name: '@bitwarden/cli'

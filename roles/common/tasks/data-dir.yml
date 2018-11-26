@@ -4,11 +4,9 @@
     - name: create mount point for data
       file:
         state: directory
-        path: /data/
+        path: /data
 
     - name: mount the directory
-      mount:
-        path: /data/
-        src: /dev/disk/by-label/DATA
-        state: mounted
-        fstype: auto
+      lineinfile:
+        path: /etc/fstab
+        line: LABEL=DATA /data auto nofail 0 0

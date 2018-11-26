@@ -2,7 +2,7 @@
 - name: set the xyne repo architecture
   set_fact: xyne_architecture={{ ansible_architecture }}
   when: ansible_architecture in ['x86_64']
-  
+
 - name: configure support for xyne repo
   blockinfile:
     path: /etc/pacman.conf
@@ -10,7 +10,7 @@
       [xyne-{{ xyne_architecture|default("any") }}]
       SigLevel = Required
       Server = https://xyne.archlinux.ca/repos/xyne
-      
+
 - name: pull down new repos
   pacman:
     update_cache: yes
@@ -42,8 +42,3 @@
     path: /etc/powerpill/powerpill.json
     regexp: '"server": '
     line: '"server": "http://localhost:15678"'
-
-- name: configure pacman to use pacserve
-  copy:
-    dest: /etc/pacman.d/pacserve.pacconf
-    content: Include = /etc/pacman.d/pacserve

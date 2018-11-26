@@ -18,18 +18,6 @@
  ;; If there is more than one, they won't work right.
  )
 
-(defmacro define-save-minor-mode (fn &optional after)
-  "Define a minor mode `FN-mode' that triggers FN every time a file is saved.
-The command will run after the save if AFTER is not nil."
-  (let ((mode (intern (format "%s-mode" fn)))
-	(hook (if after 'after-save-hook 'before-save-hook)))
-    `(progn
-       (define-minor-mode ,mode "" nil nil nil
-	 (if ,mode
-	     (add-hook (quote ,hook) (quote ,fn) nil t)
-	   (remove-hook (quote ,hook) (quote ,fn) t)))
-       (add-to-list 'safe-local-eval-forms '(,mode 0)))))
-
 (defmacro req (&rest pkgs)
   "Force download but not loading of PKGS."
   (cons 'progn (mapcar (lambda (pkg) `(use-package ,pkg :ensure t :defer t)) pkgs)))
@@ -45,7 +33,6 @@ The command will run after the save if AFTER is not nil."
 			 ("gnu" . "http://elpa.gnu.org/packages/")))
 (package-initialize)
 
-;; install basic files on first run
 (defun install-and-update-packages ()
   "Install and update all packages."
   (interactive)
@@ -53,23 +40,42 @@ The command will run after the save if AFTER is not nil."
   (let ((oldfunc (symbol-function 'y-or-n-p)))
     (fset 'y-or-n-p '(lambda (&rest args) t))
     (package-install-selected-packages)
-    (package-install 'use-package)
     (fset 'y-or-n-p oldfunc))
-  (auto-package-update-now))
+  (auto-package-update-now)
+  (package-autoremove))
 
-;; setup use-package
-(eval-when-compile
-  (unless (package-installed-p 'use-package)
-    (package-refresh-contents)
-    (package-install 'use-package))
-  (require 'use-package)
-  (setq use-package-always-ensure t)
-  (setq use-package-verbose t))
-(use-package bind-key)
-(use-package diminish)
-(use-package use-package-chords
-  :config (key-chord-mode 1))
-(use-package system-packages)
+(defmacro define-save-minor-mode (fn &optional after)
+  "Define a minor mode `FN-mode' that triggers FN every time a file is saved.
+The command will run after the save if AFTER is not nil."
+  (let ((mode (intern (format "%s-mode" fn)))
+	(hook (if after 'after-save-hook 'before-save-hook)))
+    `(progn
+       (define-minor-mode ,mode "" nil nil nil
+	 (if ,mode
+	     (add-hook (quote ,hook) (quote ,fn) nil t)
+	   (remove-hook (quote ,hook) (quote ,fn) t)))
+       (add-to-list 'safe-local-eval-forms '(,mode 0)))))
+
+(defun add-mode-line ()
+  "Add the current mode to the mode line of a file."
+  (interactive)
+  (add-file-local-variable-prop-line
+   'mode (intern (replace-regexp-in-string
+		  "-mode\\'" "" (symbol-name major-mode)))))
+
+(defun global-disable-mode (mode-fn)
+  "Disable `MODE-FN' in ALL buffers."
+  (interactive "a")
+  (dolist (buffer (buffer-list))
+    (with-current-buffer buffer
+      (funcall mode-fn -1))))
+
+(add-to-list 'display-buffer-alist '("\\*new-term\\*" display-buffer-no-window (allow-no-window . t)))
+(defun start-new-term ()
+  "Start xterm in local directory."
+  (interactive)
+  (let ((buf (generate-new-buffer-name "*new-term*")))
+    (async-shell-command "term" buf buf)))
 
 ;; some generic settings for emacs as a whole
 (scroll-bar-mode 0)
@@ -104,75 +110,9 @@ The command will run after the save if AFTER is not nil."
 (add-to-list 'safe-local-variable-values '(buffer-file-coding-system . dos))
 (add-to-list 'auto-mode-alist '("README" . text-mode))
 
-(defun add-mode-line ()
-  "Add the current mode to the mode line of a file."
-  (interactive)
-  (add-file-local-variable-prop-line
-   'mode (intern (replace-regexp-in-string
-		  "-mode\\'" "" (symbol-name major-mode)))))
-
-(defun global-disable-mode (mode-fn)
-  "Disable `MODE-FN' in ALL buffers."
-  (interactive "a")
-  (dolist (buffer (buffer-list))
-    (with-current-buffer buffer
-      (funcall mode-fn -1))))
-
-(add-to-list 'display-buffer-alist '("\\*new-term\\*" display-buffer-no-window (allow-no-window . t)))
-(defun start-new-term ()
-  "Start xterm in local directory."
-  (interactive)
-  (let ((buf (generate-new-buffer-name "*new-term*")))
-    (async-shell-command "term" buf buf)))
-
-;; completions
-(icomplete-mode)
-(ido-mode)
-(use-package helm
-  :disabled
-  :diminish helm-mode
-  :config (helm-mode))
-(use-package helm-config
-  :after helm :ensure helm)
-
-(req protobuf-mode)
-(req graphviz-dot-mode)
-(req ecb semi)
-(req lorem-ipsum)
-
-;; info lookup
-(use-package google-this
-  :diminish google-this-mode
-  :config
-  (google-this-mode))
-
-(use-package mu4e
-  :ensure nil)
-
-(req haskell-mode)
-
-(req json-mode)
-
-(req markdown-mode)
-
-(req css-mode)
-
-(req less-css-mode)
-
-(req ssh-config-mode)
-
-(req systemd)
-
-;; tag search
-(use-package ggtags
-  :diminish ggtags-mode
-  ;; :hook ((c-mode c++-mode java-mode) . ggtags-mode)
-  )
-(req ripgrep)
-
 ;; prevent annoying windows from popping up out of reach
-(setq display-buffer-base-action '((display-buffer-use-some-window display-buffer-same-window) (nil)))
-(setq-default Man-notify-method 'pushy)
+;; (setq display-buffer-base-action '((display-buffer-use-some-window display-buffer-same-window) (nil)))
+;; (setq-default Man-notify-method 'pushy)
 
 ;; use xclip to copy/paste in emacs-nox
 (unless window-system
@@ -189,6 +129,47 @@ The command will run after the save if AFTER is not nil."
     (setq interprogram-cut-function 'xclip-cut-function)
     (setq interprogram-paste-function 'xclip-paste-function)))
 
+;; setup use-package
+(eval-when-compile
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+  (require 'use-package))
+
+(use-package bind-key
+  :ensure t)
+
+(use-package diminish
+  :ensure t)
+
+(use-package use-package-chords
+  :ensure t
+  :config (key-chord-mode 1))
+
+;; completions
+(icomplete-mode)
+(ido-mode)
+(use-package helm
+  :disabled
+  :diminish helm-mode
+  :config (helm-mode))
+(use-package helm-config
+  :after helm :ensure helm)
+
+;; info lookup
+(use-package google-this
+  :diminish google-this-mode
+  :config
+  (google-this-mode))
+
+(use-package mu4e)
+
+;; tag search
+(use-package ggtags
+  :diminish ggtags-mode
+  ;; :hook ((c-mode c++-mode java-mode) . ggtags-mode)
+  )
+
 ;; theme
 (use-package hc-zenburn-theme
   :ensure hc-zenburn-theme
@@ -202,7 +183,8 @@ The command will run after the save if AFTER is not nil."
 (use-package flyspell
   :diminish (flyspell-mode flyspell-prog-mode)
   :hook ((text-mode . flyspell-mode)
-	 (prog-mode . flyspell-prog-mode))
+	 (prog-mode . flyspell-prog-mode)
+	 (flyspell-mode . flyspell-buffer))
   :init
   (setq-default flyspell-use-meta-tab nil))
 

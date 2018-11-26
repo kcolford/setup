@@ -1,5 +1,33 @@
 #!/bin/sh
 
+# set the path
+path () {
+    case ":$PATH:" in
+	*:"$1":*)
+	    ;;
+	*)
+	    PATH="$1${PATH:+:$PATH}"
+    esac
+}
+export PREFIX_="$HOME"/.local
+export CPATH="$PREFIX_/include${CPATH:+:$CPATH}"
+export LD_LIBRARY_PATH="$PREFIX_/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+export LIBRARY_PATH="$PREFIX_/lib${LIBRARY_PATH:+:$LIBRARY_PATH}"
+path "$PREFIX_"/bin
+export CARGO_INSTALL_ROOT="$PREFIX_"
+path "$CARGO_INSTALL_ROOT"/bin
+export GOPATH="$PREFIX_"
+path "$GOPATH"/bin
+export NPM_CONFIG_PREFIX="$PREFIX_"
+path "$NPM_CONFIG_PREFIX"/bin
+export PYTHONUSERBASE="$PREFIX_"
+path "$PYTHONUSERBASE"/bin
+export GEM_HOME="$PREFIX_"
+path "$GEM_HOME"/bin
+
+path ~/bin
+unset path
+
 # default options
 alias bauerbill='bauerbill --aur'
 alias bb-wrapper='bb-wrapper --build-dir ~/.cache/bauerbill --aur'
@@ -12,12 +40,17 @@ alias grep='grep --color=auto'
 alias ls='ls --hide="*~" --color=auto --classify --human-readable'
 alias qemu-system-x86_64='qemu-system-x86_64 -accel kvm -smp 2 -m 2048'
 alias rg='rg --smart-case --search-zip'
-if [ -x /usr/bin/trash ]; then
-    alias rm='trash'
-fi
+alias sudo='sudo '
 alias tcpdump='sudo tcpdump --relinquish-privileges $USER'
 alias xclip='xclip -selection clipboard'
 
+# replacement programs with more features
+if [ -x /usr/bin/trash ]; then
+    alias rm='trash'
+fi
+alias pacman='${PACMAN:-pacman}'
+
+# handy shortcuts
 alias e='${EDITOR:-nano}'
 alias em='$ALTERNATE_EDITOR'
 alias fu='fuck'
@@ -31,27 +64,28 @@ alias sl='ls'
 alias LS='ls'
 alias open='xdg-open'
 
+# personal info
 export NAME="Kieran Colford"
 export EMAIL="kieran@kcolford.com"
 
+# basic environment
 export ALTERNATE_EDITOR="emacs -q"
 export EMACS_SERVER_NAME=server
 export PAGER=less
 export LESS=FRSXi
 export DIFFPROG=diff
+if [ "$TERM" = "dumb" ]; then
+    export PAGER=cat
+else
+    export PAGER=less
+fi
+#export SSH_AUTH_SOCK="${SSH_AUTH_SOCK:-$(gpgconf --list-dirs agent-ssh-socket)}"
+export SSH_AUTH_SOCK="${SSH_AUTH_SOCK:-$XDG_RUNTIME_DIR/ssh-agent.socket}"
 
+# editor
 if [ -x /usr/bin/emacs ]; then
     export EDITOR="emacsclient -nw -s $EMACS_SERVER_NAME"
 fi
 export EDITOR="${EDITOR:-nano}"
 export VISUAL="$EDITOR"
 export TEXEDIT="$EDITOR +%d %s"
-
-#export SSH_AUTH_SOCK="${SSH_AUTH_SOCK:-$(gpgconf --list-dirs agent-ssh-socket)}"
-export SSH_AUTH_SOCK="${SSH_AUTH_SOCK:-$XDG_RUNTIME_DIR/ssh-agent.socket}"
-
-if [ "$TERM" = "dumb" ]; then
-    export PAGER=cat
-else
-    export PAGER=less
-fi

@@ -4,7 +4,7 @@ set $down k
 set $up l
 set $right semicolon
 
-workspace_auto_back_and_forth yes
+# workspace_auto_back_and_forth yes
 floating_modifier $mod
 # font -*-terminus-medium-*-*-*-14-*-*-*-*-*-iso10646-1
 bar {
@@ -44,7 +44,8 @@ bindsym $mod+period exec transset-df -a --inc 0.1
 bindsym XF86MonBrightnessUp exec --no-startup-id xbacklight +3
 bindsym XF86MonBrightnessDown exec --no-startup-id xbacklight -3
 
-bindsym $mod+equal exec xdotool key Caps_Lock #for chromebooks
+bindsym $mod+equal exec xdotool key Caps_Lock
+bindsym Control+equal exec xdotool key Caps_Lock
 
 bindsym $mod+minus scratchpad show
 bindsym $mod+Shift+minus move scratchpad
