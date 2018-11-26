@@ -1,0 +1,41 @@
+---
+- name: install ecryptfs packages
+  package:
+    state: present
+    name: ecryptfs-utils
+
+- name: automatically unlock ecryptfs mount
+  pamd:
+    name: system-auth
+    type: auth
+    control: required
+    module_path: pam_unix.so
+    new_type: auth
+    new_control: required
+    new_module_path: pam_ecryptfs.so
+    module_arguments: unwrap
+    state: after
+
+- name: automatically update ecryptfs password with user password
+  pamd:
+    name: system-auth
+    type: password
+    control: required
+    module_path: pam_unix.so
+    new_type: password
+    new_control: optional
+    new_module_path: pam_ecryptfs.so
+    state: before
+    
+- name: automatically mount ecryptfs
+  pamd:
+    name: system-auth
+    type: session
+    control: required
+    module_path: pam_unix.so
+    new_type: session
+    new_control: optional
+    new_module_path: pam_ecryptfs.so
+    module_arguments: unwrap
+    state: after
+      
