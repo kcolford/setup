@@ -1,15 +1,10 @@
 ---
-- name: create no-op pacman conf file
-  copy:
-    dest: /etc/pacman.d/noop.pacconf
-    content: ""
-
 - name: setup mirrorlist
   copy:
     dest: /etc/pacman.d/mirrorlist
     content: |
-      Include = /etc/pacman.d/*.pacconf
       Server = https://mirror.csclub.uwaterloo.ca/archlinux/$repo/os/$arch
+      Server = http://mirror.csclub.uwaterloo.ca/archlinux/$repo/os/$arch
   notify: mirrorlist update
 
 - name: automatically clean up the pacman cache

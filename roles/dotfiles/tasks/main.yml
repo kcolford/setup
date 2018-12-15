@@ -56,7 +56,7 @@
       - moreutils
       - unzip
       - unrar
-      - wget
+      - get
       - emacs
       - mu
       - offlineimap
@@ -66,10 +66,12 @@
       - fd
       - ripgrep
       - bat
+      - rustup
 
 - name: perform installation and update tasks as user
   become: yes
   become_user: "{{ user.name }}"
+  ignore_errors: yes
   module_defaults:
     npm:
       state: latest
@@ -78,4 +80,5 @@
       chdir: "{{ user.home }}"
   block:
     - command: emacs --batch -l .emacs.d/init.el -f auto-package-update-now
-      ignore_errors: yes
+    - command: rustup update stable
+    - command: rustup self update

@@ -9,8 +9,5 @@
   tags:
     - update
 
-- name: update bootloader config
+- name: grub config
   command: grub-mkconfig -o /boot/grub/grub.cfg
-
-- name: install grub to firmware
-  command: grub-install {{ grub_args }}

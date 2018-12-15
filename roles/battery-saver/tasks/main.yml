@@ -7,7 +7,7 @@
 
 - name: enable tlp-sleep
   service: name=tlp-sleep enabled=yes
-  
+
 - name: disable systemd-rfkill service
   systemd: name=systemd-rfkill.service masked=yes
   ignore_errors: yes
@@ -19,3 +19,15 @@
 # - systemd: name=NetworkManager.service masked=yes
 #   when: not use_network_manager
 
+- name: use suspend-then-hibernate instead of plain suspend
+  file:
+    state: link
+    src: /usr/lib/systemd/system/systemd-suspend-then-hibernate.service
+    dest: /etc/systemd/system/systemd-suspend.service
+
+- name: configure delay between suspending and hibernating
+  copy:
+    path: /etc/systemd/sleep.conf
+    content: |
+      [Sleep]
+      HibernateDelaySec=1hr

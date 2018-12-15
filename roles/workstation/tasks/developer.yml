@@ -18,9 +18,10 @@
       - nodejs
       - npm
       - go
-      - rust
+      - rustup
       - cmake
       - clang
+      - gdb
       # - watchman
 
       - vagrant

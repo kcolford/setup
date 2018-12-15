@@ -37,7 +37,7 @@
       # - profile-sync-daemon
       # - chromium-widevine
 
-      - firefox-developer-edition
+      - firefox
 
 - name: configure natural scrolling
   copy:

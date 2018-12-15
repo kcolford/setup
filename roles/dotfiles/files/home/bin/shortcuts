@@ -2,3 +2,5 @@
 set -euo pipefail
 
 grep ^bind ~/.config/i3/config | grep -v -e move -e workspace -e focus
+grep insteadOf ~/.config/git/config
+git config --list | grep ^alias
