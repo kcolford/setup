@@ -62,3 +62,9 @@
         line: LABEL=DATA /data auto nofail,noauto,x-systemd.automount 0 0
         regexp: DATA
       notify: remount data dir
+
+- name: add user password to encrypted disk
+  expect:
+    command: cryptsetup -q luksAddKey --keyfile /etc/keyfiles/{{ ansible_local.encrypted_disk }} /dev/disk/by-uuid/{{ ansible_local.encrypted_disk }}
+    responses:
+      passphrase: "{{ user_pass }}"
