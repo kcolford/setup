@@ -68,3 +68,4 @@
     command: cryptsetup -q luksAddKey --keyfile /etc/keyfiles/{{ ansible_local.encrypted_disk }} /dev/disk/by-uuid/{{ ansible_local.encrypted_disk }}
     responses:
       passphrase: "{{ user_pass }}"
+  when: ansible_local.encrypted_disk is defined
