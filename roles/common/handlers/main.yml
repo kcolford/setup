@@ -11,3 +11,6 @@
 
 - name: grub config
   command: grub-mkconfig -o /boot/grub/grub.cfg
+
+- name: remount data dir
+  command: mount -o remount /data

@@ -61,4 +61,4 @@
         path: /etc/fstab
         line: LABEL=DATA /data auto nofail,noauto,x-systemd.automount 0 0
         regexp: DATA
-      notify: remount
+      notify: remount data dir
