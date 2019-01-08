@@ -27,7 +27,7 @@
 
 - name: configure delay between suspending and hibernating
   copy:
-    path: /etc/systemd/sleep.conf
+    dest: /etc/systemd/sleep.conf
     content: |
       [Sleep]
       HibernateDelaySec=1hr
