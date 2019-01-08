@@ -34,6 +34,7 @@ bindsym $mod+b exec firefox
 bindsym $mod+u exec emacs
 bindsym $mod+d exec dmenu_run
 bindsym $mod+x exec i3-dmenu-desktop
+bindsym $mod+y exec xrandr --auto
 
 bindsym --release Print exec scrot ~/Dropbox/downloads/screenshot-%Y-%m-%d-%T.png
 
