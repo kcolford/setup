@@ -79,6 +79,9 @@
     command:
       chdir: "{{ user.home }}"
   block:
-    - command: emacs --batch -l .emacs.d/init.el -f auto-package-update-now
-    - command: rustup update stable
-    - command: rustup self update
+    - name: setup emacs
+      command: emacs --batch -l .emacs.d/init.el -f auto-package-update-now
+    - name: setup stable rust
+      command: rustup update stable
+    - name: update all rust
+      command: rustup self update
