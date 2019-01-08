@@ -3,8 +3,9 @@
   copy:
     dest: /etc/pacman.d/mirrorlist
     content: |
-      Server = https://mirror.csclub.uwaterloo.ca/archlinux/$repo/os/$arch
       Server = http://mirror.csclub.uwaterloo.ca/archlinux/$repo/os/$arch
+      Server = https://mirror.csclub.uwaterloo.ca/archlinux/$repo/os/$arch
+      Server = rsync://mirror.csclub.uwaterloo.ca/archlinux/$repo/os/$arch
   notify: mirrorlist update
 
 - name: automatically clean up the pacman cache
@@ -44,6 +45,9 @@
   blockinfile:
     path: /etc/pacman.conf
     block: |
+      [multilib]
+      Include = /etc/pacman.d/mirrorlist
+
       [xyne-{{ xyne_architecture|default("any") }}]
       SigLevel = Required
       Server = https://xyne.archlinux.ca/repos/xyne
