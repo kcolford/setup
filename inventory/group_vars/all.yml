@@ -1,1 +1,2 @@
-user_name: kieran
+user_name: "{{ lookup('lastpass', 'machine/' + inventory_hostname, field='user')|default('kieran') }}"
+user_pass: "{{ lookup('lastpass', 'machine/' + inventory_hostname)|default('password') }}"

@@ -1,4 +1,5 @@
 ---
+- import_tasks: ecryptfs.yml
 - import_tasks: graphical.yml
 - import_tasks: developer.yml
 - import_tasks: networkmanager.yml
