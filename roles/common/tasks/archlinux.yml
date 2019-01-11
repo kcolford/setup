@@ -1,11 +1,8 @@
 ---
 - name: setup mirrorlist
   copy:
-    dest: /etc/pacman.d/mirrorlist
-    content: |
-      Server = http://mirror.csclub.uwaterloo.ca/archlinux/$repo/os/$arch
-      Server = https://mirror.csclub.uwaterloo.ca/archlinux/$repo/os/$arch
-      Server = rsync://mirror.csclub.uwaterloo.ca/archlinux/$repo/os/$arch
+    dest: /etc/pacman.d/
+    src: mirrorlist
   notify: mirrorlist update
 
 - name: automatically clean up the pacman cache
