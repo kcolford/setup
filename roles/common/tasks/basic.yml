@@ -40,6 +40,11 @@
     name: fstrim.timer
     enabled: yes
 
+- name: install grub for next step
+  package:
+    state: present
+    name: grub
+
 - name: reduce boot-up time on grub
   lineinfile:
     line: GRUB_TIMEOUT=2
