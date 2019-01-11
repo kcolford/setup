@@ -20,6 +20,12 @@
   args:
     creates: /etc/pacman.d/gnupg/tofu.db
 
+- name: install needed extras
+  package:
+    state: present
+    name:
+      - linux-headers
+
 - name: install intel microcode
   package:
     name: intel-ucode
@@ -38,7 +44,7 @@
   set_fact: xyne_architecture={{ ansible_architecture }}
   when: ansible_architecture in ['x86_64']
 
-- name: configure support for xyne repo
+- name: configure package repos
   blockinfile:
     path: /etc/pacman.conf
     block: |
@@ -73,7 +79,7 @@
   service:
     name: pacserve
     state: started
-  ignore_errors: yes
+  ignore_errors: "{{ not ansible_is_chroot }}"
 
 - name: make powerpill make use of pacserve
   lineinfile:
