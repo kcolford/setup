@@ -4,8 +4,6 @@
     state: present
     name:
       - sudo
-      - linux-zen
-      - linux-zen-headers
       - bash-completion
       - ccid
       - opensc

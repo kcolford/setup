@@ -1,0 +1,7 @@
+- name: install responsive kernel
+  package:
+    state: present
+    name:
+      - linux-zen
+      - linux-zen-headers
+  notify: kernel update
