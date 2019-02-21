@@ -94,20 +94,24 @@ case "$enc" in
 	;;
 esac
 
+# copy crypttab.initramfs
+if [ "$enc" = "disk" ]; then
+    mkdir /mnt/etc/
+    cp /tmp/crypttab.initramfs /mnt/etc/
+fi
+
 # final install step
 pacstrap /mnt base grub efibootmgr ansible git
 cp /tmp/fstab /mnt/etc/
 mkdir /mnt/etc/ansible/facts.d/
 if [ -f /tmp/keyfile ]; then
     install -D -m000 /tmp/keyfile /mnt/etc/keyfiles/"$uuid"
-    cp /tmp/crypttab.initramfs /etc/
     echo "\"$uuid\"" > /mnt/etc/ansible/facts.d/encrypted_disk.fact
 fi
 sed -i "/GRUB_CMDLINE_LINUX_DEFAULT=/s|\".*\"|\"$cmdline\"|" /mnt/etc/default/grub
-arch-chroot /mnt mkinitcpio -P
-arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 if [ -d /sys/firmware/efi/efivars/ ]; then
     arch-chroot /mnt grub-install --efi-directory /boot
 else
     arch-chroot /mnt grub-install "$disk"
 fi
+arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
