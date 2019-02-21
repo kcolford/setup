@@ -78,3 +78,4 @@
     responses:
       passphrase: "{{ user_pass }}"
   when: ansible_local.encrypted_disk is defined
+  ignore_errors: yes
