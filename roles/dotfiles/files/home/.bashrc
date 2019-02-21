@@ -23,7 +23,7 @@ shopt -s no_empty_cmd_completion
 HISTCONTROL=ignoreboth
 
 # key sequences
-bind -x '"\C-]":term'
+bind -x '"\C-]":term&&fg 2>/dev/null'
 
 import() {
     for file; do

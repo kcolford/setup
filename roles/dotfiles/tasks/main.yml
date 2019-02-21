@@ -86,6 +86,12 @@
     - name: update all rust
       command: rustup self update
       ignore_errors: yes
+    - shell: feh --bg-fill "{{ background }}"
+      args:
+        creates: "{{ background }}"
+      vars:
+        background: "{{ user.home }}/Dropbox/linux_archlinux_os_blue_black_logo_30861_2560x1600.jpg"
+      ignore_errors: yes
     - get_url:
         url: https://aka.ms/windev_VM_virtualbox
         dest: "{{ user.home }}/files/"
