@@ -23,6 +23,7 @@
 [url "git@github.com:"]
 	pushInsteadOf = "https://github.com/"
 	pushInsteadOf = "gh:"
+	insteadOf = "ghs:"
 [url "git@gitlab.com:"]
 	pushInsteadOf = "https://gitlab.com/"
 [url "https://aur.archlinux.org/"]

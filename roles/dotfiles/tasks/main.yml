@@ -85,3 +85,10 @@
       command: rustup update stable
     - name: update all rust
       command: rustup self update
+      ignore_errors: yes
+    - get_url:
+        url: https://aka.ms/windev_VM_virtualbox
+        dest: "{{ user.home }}/files/"
+      tags:
+        - downloads
+        - never

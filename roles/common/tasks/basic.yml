@@ -15,6 +15,10 @@
   locale_gen:
     name: "{{ system_locale }}.{{ system_encoding }}"
 
+- name: setup fallback locale
+  locale_gen:
+    name: en_US.UTF-8
+
 - name: set locale
   lineinfile:
     path: /etc/locale.conf
