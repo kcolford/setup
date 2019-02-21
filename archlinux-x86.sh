@@ -13,6 +13,7 @@ esac
 
 # get rid of artifacts from previous run
 umount -R /mnt || true
+swapoff -a || true
 vgremove -ff rootvol || true
 killall lvmetad || true
 cryptsetup close root || true
@@ -43,6 +44,9 @@ else
     $parted mkpart primary 1024 100%
     $parted name 3 ROOT
 fi
+
+# sleep to prevent race condition
+sleep 1
 
 # setup root volume group, either on a luks device or something else
 set +u
