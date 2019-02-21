@@ -74,8 +74,7 @@
 
 - name: add user password to encrypted disk
   expect:
-    command: cryptsetup -q luksAddKey --keyfile /etc/keyfiles/{{ ansible_local.encrypted_disk }} /dev/disk/by-uuid/{{ ansible_local.encrypted_disk }}
+    command: cryptsetup -q luksAddKey --key-file /etc/keyfiles/{{ ansible_local.encrypted_disk }} /dev/disk/by-uuid/{{ ansible_local.encrypted_disk }}
     responses:
       passphrase: "{{ user_pass }}"
   when: ansible_local.encrypted_disk is defined
-  ignore_errors: yes

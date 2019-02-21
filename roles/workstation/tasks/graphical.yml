@@ -63,6 +63,7 @@
   service:
     name: lightdm
     enabled: yes
+  ignore_errors: yes
 
 - name: start display manager
   service:
