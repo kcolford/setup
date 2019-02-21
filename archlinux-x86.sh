@@ -112,6 +112,6 @@ sed -i "/GRUB_CMDLINE_LINUX_DEFAULT=/s|\".*\"|\"$cmdline\"|" /mnt/etc/default/gr
 if [ -d /sys/firmware/efi/efivars/ ]; then
     arch-chroot /mnt grub-install --efi-directory /boot
 else
-    arch-chroot /mnt grub-install "$disk"
+    arch-chroot /mnt grub-install --force "$disk"
 fi
 arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
