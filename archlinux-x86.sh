@@ -101,7 +101,7 @@ if [ "$enc" = "disk" ]; then
 fi
 
 # final install step
-pacstrap /mnt base grub efibootmgr ansible git
+pacstrap /mnt base grub efibootmgr ansible git lastpass-cli
 cp /tmp/fstab /mnt/etc/
 mkdir /mnt/etc/ansible/facts.d/
 if [ -f /tmp/keyfile ]; then
@@ -114,4 +114,10 @@ if [ -d /sys/firmware/efi/efivars/ ]; then
 else
     arch-chroot /mnt grub-install --force "$disk"
 fi
-arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
+mount --bind /run/lvm /mnt/mnt
+arch-chroot /mnt <<EOF
+mkdir /run/lvm
+mount --bind /mnt /run/lvm
+grub-mkconfig -o /boot/grub/grub.cfg
+umount /run/lvm
+EOF

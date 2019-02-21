@@ -72,11 +72,6 @@
         regexp: DATA
       notify: remount data dir
 
-- name: install lastpass for passwords
-  package:
-    state: installed
-    name: lastpass-cli
-
 - name: add user password to encrypted disk
   expect:
     command: cryptsetup -q luksAddKey --keyfile /etc/keyfiles/{{ ansible_local.encrypted_disk }} /dev/disk/by-uuid/{{ ansible_local.encrypted_disk }}
