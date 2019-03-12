@@ -11,6 +11,11 @@ case "$0" in
 	;;
 esac
 
+
+
+
+curl https://www.archlinux.org/mirrorlist/\?country=CA | sed s/#// > /etc/pacman.d/mirrorlist || true
+
 # get rid of artifacts from previous run
 umount -R /mnt || true
 swapoff -a || true
