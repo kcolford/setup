@@ -44,19 +44,6 @@
     name: fstrim.timer
     enabled: yes
 
-- name: install grub for next step
-  package:
-    state: present
-    name: grub
-
-- name: reduce boot-up time on grub
-  lineinfile:
-    line: GRUB_TIMEOUT=2
-    regexp: ^GRUB_TIMEOUT
-    path: /etc/default/grub
-  notify:
-    - grub config
-
 - name: setup data disk
   when: "'DATA' in ansible_device_links.labels.values()|flatten"
   block:
@@ -71,11 +58,3 @@
         line: LABEL=DATA /data auto nofail,noauto,x-systemd.automount 0 0
         regexp: DATA
       notify: remount data dir
-
-- name: add user password to encrypted disk
-  expect:
-    command: cryptsetup -q luksAddKey --key-file /etc/keyfiles/{{ ansible_local.encrypted_disk }} /dev/disk/by-uuid/{{ ansible_local.encrypted_disk }}
-    responses:
-      passphrase: "{{ user_pass }}"
-  when: ansible_local.encrypted_disk is defined
-  ignore_errors: yes
