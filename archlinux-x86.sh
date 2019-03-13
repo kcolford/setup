@@ -11,9 +11,6 @@ case "$0" in
 	;;
 esac
 
-
-
-
 curl https://www.archlinux.org/mirrorlist/\?country=CA | sed s/#// > /etc/pacman.d/mirrorlist || true
 
 # get rid of artifacts from previous run
@@ -63,7 +60,8 @@ case "$enc" in
 	;;
     disk)
 	head -c 4096 /dev/urandom > /tmp/keyfile
-	cryptsetup luksFormat /dev/disk/by-partlabel/ROOT /tmp/keyfile -q
+	cryptsetup luksFormat /dev/disk/by-partlabel/ROOT /tmp/keyfile -q # format with keyfile
+	cryptsetup luksAddKey /dev/disk/by-partlabel/ROOT # add password boot
 	uuid="$(cryptsetup luksUUID /dev/disk/by-partlabel/ROOT)"
 	cryptsetup open /dev/disk/by-partlabel/ROOT root --key-file /tmp/keyfile
 	echo root UUID="$uuid" none discard >> /tmp/crypttab.initramfs
@@ -99,30 +97,31 @@ case "$enc" in
 	;;
 esac
 
-# copy crypttab.initramfs
-if [ "$enc" = "disk" ]; then
-    mkdir /mnt/etc/
-    cp /tmp/crypttab.initramfs /mnt/etc/
-fi
-
-# final install step
+# install basic archlinux
 pacstrap /mnt base grub efibootmgr ansible git lastpass-cli
+
+# copy configuration files in
 cp /tmp/fstab /mnt/etc/
 mkdir /mnt/etc/ansible/facts.d/
 if [ -f /tmp/keyfile ]; then
+    cp /tmp/crypttab.initramfs /mnt/etc/
     install -D -m000 /tmp/keyfile /mnt/etc/keyfiles/"$uuid"
     echo "\"$uuid\"" > /mnt/etc/ansible/facts.d/encrypted_disk.fact
 fi
+
+# configure grub
 sed -i "/GRUB_CMDLINE_LINUX_DEFAULT=/s|\".*\"|\"$cmdline\"|" /mnt/etc/default/grub
+sed -i "/^GRUB_TIMEOUT=/s/=.*/=2/" /mnt/etc/default/grub
+arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
+
+# install grub
 if [ -d /sys/firmware/efi/efivars/ ]; then
     arch-chroot /mnt grub-install --efi-directory /boot
 else
     arch-chroot /mnt grub-install --force "$disk"
 fi
-mount --bind /run/lvm /mnt/mnt
-arch-chroot /mnt <<EOF
-mkdir /run/lvm
-mount --bind /mnt /run/lvm
-grub-mkconfig -o /boot/grub/grub.cfg
-umount /run/lvm
-EOF
+
+# configure initcpio
+boothooks="systemd autodetect sd-vconsole sd-encrypt sd-lvm2 modconf block keyboard filesystems fsck"
+sed -i "/^HOOKS/s/.*/HOOKS=($boothooks)/" /mnt/etc/mkinitcpio.conf
+arch-chroot /mnt mkinitcpio -P
