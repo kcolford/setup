@@ -33,13 +33,6 @@
   when: "'GenuineIntel' in ansible_processor"
   notify: kernel update
 
-- name: setup initramfs
-  lineinfile:
-    path: /etc/mkinitcpio.conf
-    line: HOOKS=(systemd autodetect sd-vconsole sd-encrypt sd-lvm2 modconf block keyboard filesystems fsck)
-    regexp: ^HOOKS
-  notify: rebuild initramfs
-
 - name: set the xyne repo architecture
   set_fact: xyne_architecture={{ ansible_architecture }}
   when: ansible_architecture in ['x86_64']
