@@ -75,15 +75,20 @@ The command will run after the save if AFTER is not nil."
   (interactive)
   (shell-command "term"))
 
+(defmacro q (command &rest args)
+  "Only on COMMAND if it is defined."
+  `(when (fboundp (quote ,command))
+     (,command ,@args)))
+
 ;; some generic settings for emacs as a whole
-(scroll-bar-mode 0)
-(tool-bar-mode 0)
+(q scroll-bar-mode 0)
+(q tool-bar-mode 0)
 (save-place-mode)
 (global-auto-revert-mode)
 (show-paren-mode)
 (windmove-default-keybindings)
 (xterm-mouse-mode)
-(mouse-wheel-mode)
+(q mouse-wheel-mode)
 (column-number-mode)
 (setq vc-handled-backends '(Git))
 (defalias 'yes-or-no-p 'y-or-n-p)

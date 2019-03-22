@@ -1,5 +1,7 @@
 # ~/.bashrc
 
+[ ! -r /etc/bashrc ] || . /etc/bashrc
+
 # colours
 if [ "$TERM" != "dumb" ]; then
     RED="$(tput setaf 1)"
@@ -36,7 +38,7 @@ import() {
 
 try_eval() {
     if command -v "$1" > /dev/null; then
-	eval "$("$@")"
+	eval "$("$@" 2> /dev/null)"
     else
 	if command -v pkgfile > /dev/null; then
 	    pkgfile -bv "$1"
@@ -68,7 +70,9 @@ PS1="\\[$RED\\]\${?/#0/\\[$GREEN\\]}$PS1\\[$RESET\\]"
 . ~/.aliases
 
 import /{etc,usr{,/local}/share/bash-completion}/bash_completion
+import /usr/local/etc/profile.d/bash_completion.sh
 import /usr/share/doc/pkgfile/command-not-found.bash
+try_eval docker-machine env &
 try_eval direnv hook bash &
 try_eval hub alias -s &
 try_eval thefuck --alias &

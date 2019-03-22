@@ -9,7 +9,8 @@
 	recurseSubmodules = on-demand
 	followTags = true
 [alias]
-	pushu = push -u origin HEAD
+	fpr = config --add remote.origin.fetch +refs/pull/*/merge:refs/remotes/origin/pr/*
+	pushu = push origin HEAD
 	up = fetch --all
 	easy-commit = !git commit -m \"$(curl whatthecommit.com/index.txt)\"
 	git = !git
@@ -39,8 +40,6 @@
 	tool = emerge
 [user]
 	name = Kieran Colford
-[core]
-	fsmonitor = /usr/share/git-core/templates/hooks/fsmonitor-watchman.sample
 [diff]
 	colorMoved = plain
 [help]
