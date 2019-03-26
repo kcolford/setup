@@ -27,15 +27,6 @@ HISTCONTROL=ignoreboth
 # key sequences
 bind -x '"\C-]":term&&fg 2>/dev/null'
 
-import() {
-    for file; do
-	if [[ -r "$file" ]]; then
-	    # shellcheck disable=SC1090
-	    . "$file"
-	fi
-    done
-}
-
 try_eval() {
     if command -v "$1" > /dev/null; then
 	eval "$("$@" 2> /dev/null)"
@@ -72,8 +63,13 @@ PS1="\\[$RED\\]\${?/#0/\\[$GREEN\\]}$PS1\\[$RESET\\]"
 import /{etc,usr{,/local}/share/bash-completion}/bash_completion
 import /usr/local/etc/profile.d/bash_completion.sh
 import /usr/share/doc/pkgfile/command-not-found.bash
+
+# run commands to load enviroments
 try_eval docker-machine env &
 try_eval direnv hook bash &
 try_eval hub alias -s &
 try_eval thefuck --alias &
 disown -a
+
+# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+export PATH="$PATH:$HOME/.rvm/bin"

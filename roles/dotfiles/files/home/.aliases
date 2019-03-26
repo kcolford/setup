@@ -1,5 +1,14 @@
 #!/bin/sh
 
+import() {
+    for file; do
+	if [[ -r "$file" ]]; then
+	    # shellcheck disable=SC1090
+	    . "$file"
+	fi
+    done
+}
+
 # set the path
 path () {
     case ":$PATH:" in
@@ -13,17 +22,13 @@ export PREFIX_="$HOME"/.local
 export CPATH="$PREFIX_/include${CPATH:+:$CPATH}"
 export LD_LIBRARY_PATH="$PREFIX_/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 export LIBRARY_PATH="$PREFIX_/lib${LIBRARY_PATH:+:$LIBRARY_PATH}"
-path "$PREFIX_"/bin
-export CARGO_INSTALL_ROOT="$PREFIX_"
-path "$CARGO_INSTALL_ROOT"/bin
-export GOPATH="$PREFIX_"
-path "$GOPATH"/bin
-export NPM_CONFIG_PREFIX="$PREFIX_"
-path "$NPM_CONFIG_PREFIX"/bin
-export PYTHONUSERBASE="$PREFIX_"
-path "$PYTHONUSERBASE"/bin
-export GEM_HOME="$PREFIX_"
-path "$GEM_HOME"/bin
+
+export NPM_CONFIG_PREFIX="$HOME"/.npmglobal
+path "$$HOME"/.npmglobal/bin
+path "$HOME"/go/bin
+path "$HOME"/.cargo/bin
+path "$HOME"/.local/bin
+path "$(ruby -e 'puts Gem.user_dir')"/bin
 
 path ~/bin
 unset path
@@ -96,3 +101,5 @@ fi
 export EDITOR="${EDITOR:-nano}"
 export VISUAL="$EDITOR"
 export TEXEDIT="$EDITOR +%d %s"
+
+import ~/.rvm/scripts/{rvm,completion}

@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-keybase login kcolford
+#keybase login kcolford
 
 cp sshkey.pub ~/.ssh/
 cp -n /dev/null ~/.ssh/sshkey || true
