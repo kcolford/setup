@@ -1,5 +1,6 @@
 # ~/.bashrc
 
+# shellcheck disable=SC1091
 [ ! -r /etc/bashrc ] || . /etc/bashrc
 
 # colours
@@ -70,6 +71,3 @@ try_eval direnv hook bash &
 try_eval hub alias -s &
 try_eval thefuck --alias &
 disown -a
-
-# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
-export PATH="$PATH:$HOME/.rvm/bin"

@@ -2,7 +2,7 @@
 
 import() {
     for file; do
-	if [[ -r "$file" ]]; then
+	if [ -r "$file" ]; then
 	    # shellcheck disable=SC1090
 	    . "$file"
 	fi
@@ -102,4 +102,6 @@ export EDITOR="${EDITOR:-nano}"
 export VISUAL="$EDITOR"
 export TEXEDIT="$EDITOR +%d %s"
 
+# rvm
 import ~/.rvm/scripts/{rvm,completion}
+export PATH="$PATH:$HOME/.rvm/bin"
