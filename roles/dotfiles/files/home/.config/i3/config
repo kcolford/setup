@@ -1,3 +1,4 @@
+# basic modifiers
 set $mod Mod4
 set $left j
 set $down k
@@ -21,6 +22,7 @@ exec --no-startup-id dex -a -e i3
 exec --no-startup-id compton
 exec --no-startup-id udiskie
 
+# change system state
 bindsym $mod+Shift+q kill
 bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
@@ -28,28 +30,35 @@ bindsym $mod+Shift+e exit
 bindsym $mod+Shift+i exec --no-startup-id loginctl lock-session && systemctl sleep
 bindsym $mod+i exec --no-startup-id loginctl lock-session
 
+# start handy programs
 bindsym $mod+Return exec xterm
-bindsym $mod+b exec firefox
+bindsym $mod+b exec chromium
 bindsym $mod+u exec emacs
 bindsym $mod+d exec dmenu_run
 bindsym $mod+x exec i3-dmenu-desktop
 bindsym $mod+y exec screen-refresh
 
+# screen shot
 bindsym --release Print exec scrot ~/Dropbox/downloads/screenshot-%Y-%m-%d-%T.png
 
+# transparent windows
 bindsym $mod+m exec transset-df -a -t
 bindsym $mod+comma exec transset-df -a --dec 0.1
 bindsym $mod+period exec transset-df -a --inc 0.1
 
+# brightness
 bindsym XF86MonBrightnessUp exec --no-startup-id xbacklight +3
 bindsym XF86MonBrightnessDown exec --no-startup-id xbacklight -3
 
-bindsym $mod+equal exec xdotool key Caps_Lock
-bindsym Control+equal exec xdotool key Caps_Lock
+# fix caps lock that was remapped to control
+bindsym $mod+equal exec --no-startup-id xdotool key Caps_Lock
+bindsym Control+equal exec --no-startup-id xdotool key Caps_Lock
 
+# scratchpad
 bindsym $mod+minus scratchpad show
 bindsym $mod+Shift+minus move scratchpad
 
+# basic i3 manipulation
 bindsym $mod+h split h
 bindsym $mod+v split v
 bindsym $mod+f fullscreen toggle
@@ -60,7 +69,6 @@ bindsym $mod+space focus mode_toggle
 bindsym $mod+Shift+space floating toggle
 bindsym $mod+a focus parent
 bindsym $mod+n focus child
-
 bindsym $mod+$left focus left
 bindsym $mod+$down focus down
 bindsym $mod+$up focus up
@@ -77,7 +85,6 @@ bindsym $mod+Shift+Left move left
 bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
-
 bindsym $mod+1 workspace 1
 bindsym $mod+2 workspace 2
 bindsym $mod+3 workspace 3
@@ -99,6 +106,7 @@ bindsym $mod+Shift+8 move container to workspace 8
 bindsym $mod+Shift+9 move container to workspace 9
 bindsym $mod+Shift+0 move container to workspace 10
 
+# workspace screen moving
 bindsym $mod+control+$left move workspace to output left
 bindsym $mod+control+$down move workspace to output down
 bindsym $mod+control+$up move workspace to output up
@@ -108,6 +116,7 @@ bindsym $mod+control+Down move workspace to output down
 bindsym $mod+control+Up move workspace to output up
 bindsym $mod+control+Right move workspace to output right
 
+# resizing
 bindsym $mod+r mode "resize"
 mode "resize" {
         bindsym $left resize shrink width 10 px or 10 ppt

@@ -1,10 +1,5 @@
 [http]
 	cookiefile = ~/.gitcookies
-[filter "lfs"]
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
-	required = true
 [push]
 	recurseSubmodules = on-demand
 	followTags = true
@@ -20,11 +15,11 @@
 [url "git://git.kernel.org/pub/scm/linux/kernel/git/"]
 	insteadOf = "kern:"
 [url "https://github.com/"]
-	insteadOf = "gh:"
 [url "git@github.com:"]
 	pushInsteadOf = "https://github.com/"
 	pushInsteadOf = "gh:"
 	insteadOf = "ghs:"
+	insteadOf = "gh:"
 [url "git@gitlab.com:"]
 	pushInsteadOf = "https://gitlab.com/"
 [url "https://aur.archlinux.org/"]
@@ -50,3 +45,8 @@
 	verbose = 1
 [color]
 	ui = auto
+[filter "lfs"]
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f

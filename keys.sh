@@ -9,4 +9,4 @@ keyname=id_rsa
 cp $keyname.pub ~/.ssh/
 cp -n /dev/null ~/.ssh/$keyname || true
 chmod 600 ~/.ssh/$keyname
-gpg < $keyname.enc > ~/.ssh/$keyname
+gpg -d < $keyname.enc > ~/.ssh/$keyname

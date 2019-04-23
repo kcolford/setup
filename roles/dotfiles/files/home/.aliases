@@ -42,7 +42,7 @@ alias ghc='ghc -dynamic'
 alias gpg='gpg -a'
 alias gpgv='gpg --verify'
 alias qemu-system-x86_64='qemu-system-x86_64 -accel kvm -smp 2 -m 2048'
-alias rg='rg --smart-case --search-zip'
+alias rg='rg --smart-case --search-zip --hidden'
 alias sudo='sudo '
 alias tcpdump='sudo tcpdump --relinquish-privileges $USER'
 alias xclip='xclip -selection clipboard'
@@ -103,5 +103,5 @@ export VISUAL="$EDITOR"
 export TEXEDIT="$EDITOR +%d %s"
 
 # rvm
-import ~/.rvm/scripts/{rvm,completion}
+import ~/.rvm/scripts/rvm ~/.rvm/scripts/completion
 export PATH="$PATH:$HOME/.rvm/bin"
