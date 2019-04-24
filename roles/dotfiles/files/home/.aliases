@@ -101,7 +101,3 @@ fi
 export EDITOR="${EDITOR:-nano}"
 export VISUAL="$EDITOR"
 export TEXEDIT="$EDITOR +%d %s"
-
-# rvm
-import ~/.rvm/scripts/rvm ~/.rvm/scripts/completion
-export PATH="$PATH:$HOME/.rvm/bin"
