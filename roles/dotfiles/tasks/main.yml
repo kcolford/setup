@@ -84,7 +84,7 @@
     - name: setup stable rust
       command: rustup update stable
     - name: update all rust
-      command: rustup self update
+      command: rustup self update-data
       ignore_errors: yes
     - shell: feh --bg-fill "{{ background }}"
       args:
