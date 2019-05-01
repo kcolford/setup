@@ -45,29 +45,6 @@
     - VirtualBox VMs
     - .local/share/libvirt/images
 
-- name: install packages for the user
-  ignore_errors: yes
-  package:
-    state: present
-    name:
-      - thefuck
-      - udiskie
-      - lesspipe
-      - moreutils
-      - unzip
-      - unrar
-      - get
-      - emacs
-      - mu
-      - offlineimap
-      - lastpass-cli
-      - trash-cli
-      - fzf
-      - fd
-      - ripgrep
-      - bat
-      - rustup
-
 - name: perform installation and update tasks as user
   become: yes
   become_user: "{{ user.name }}"
@@ -80,12 +57,10 @@
       chdir: "{{ user.home }}"
   block:
     - name: setup emacs
-      command: emacs --batch -l .emacs.d/init.el -f auto-package-update-now
+      command: emacs --batch -l .emacs.d/init.el -f install-and-update-packages
+    - command: rustup default stable
     - name: setup stable rust
-      command: rustup update stable
-    - name: update all rust
-      command: rustup self update-data
-      ignore_errors: yes
+      command: rustup update
     - shell: feh --bg-fill "{{ background }}"
       args:
         creates: "{{ background }}"

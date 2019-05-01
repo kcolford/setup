@@ -125,3 +125,6 @@ fi
 boothooks="systemd autodetect sd-vconsole sd-encrypt sd-lvm2 modconf block keyboard filesystems fsck"
 sed -i "/^HOOKS/s/.*/HOOKS=($boothooks)/" /mnt/etc/mkinitcpio.conf
 arch-chroot /mnt mkinitcpio -P
+
+# chroot and open a shell
+systemd-nspawn -D /mnt -a

@@ -60,3 +60,24 @@
 
   rescue:
     - meta: noop
+
+- name: install packages for the user
+  ignore_errors: yes
+  package:
+    state: present
+    name:
+      - thefuck
+      - udiskie
+      - lesspipe
+      - moreutils
+      - unzip
+      - unrar
+      - emacs
+      - offlineimap
+      - lastpass-cli
+      - trash-cli
+      - fzf
+      - fd
+      - ripgrep
+      - bat
+      - rustup

@@ -46,7 +46,7 @@
 
       [xyne-{{ xyne_architecture|default("any") }}]
       SigLevel = Required
-      Server = https://xyne.archlinux.ca/repos/xyne
+      Server = http://xyne.archlinux.ca/bin/repo.php?file=
 
 - name: pull down new repos
   pacman:
