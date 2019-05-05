@@ -12,7 +12,7 @@
       - network-manager-applet
       - i3-gaps
       - i3blocks
-      - i3lock
+      - light-locker
       - i3status
       - perl-json-xs
       - perl-anyevent-i3

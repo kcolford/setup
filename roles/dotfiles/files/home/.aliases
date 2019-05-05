@@ -15,23 +15,39 @@ path () {
 	*:"$1":*)
 	    ;;
 	*)
-	    PATH="$1${PATH:+:$PATH}"
+	    if [ "$2" ]; then
+		PATH="$1${PATH:+:$PATH}"
+	    else
+		PATH="${PATH:+$PATH:}$1"
+	    fi
     esac
 }
+path ~/bin y
+
+# C/C++
 export PREFIX_="$HOME"/.local
 export CPATH="$PREFIX_/include${CPATH:+:$CPATH}"
 export LD_LIBRARY_PATH="$PREFIX_/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 export LIBRARY_PATH="$PREFIX_/lib${LIBRARY_PATH:+:$LIBRARY_PATH}"
+path "$PREFIX_"/bin
 
+# node
 export NPM_CONFIG_PREFIX="$HOME"/.npmglobal
-path "$$HOME"/.npmglobal/bin
-path "$HOME"/go/bin
-path "$HOME"/.cargo/bin
-path "$HOME"/.local/bin
-path "$(ruby -e 'puts Gem.user_dir')"/bin
+path "$HOME"/.npmglobal/bin
 
-path ~/bin
-unset path
+# go
+path "$HOME"/go/bin
+
+# rust
+path "$HOME"/.cargo/bin
+
+# python
+path "$HOME"/.local/bin
+
+# ruby
+path ~/.rvm/bin
+import ~/.rvm/scripts/rvm
+path "$(ruby -e 'puts Gem.user_dir')"/bin
 
 # default options
 alias bauerbill='bauerbill --aur'
@@ -95,9 +111,14 @@ fi
 export SSH_AUTH_SOCK="${SSH_AUTH_SOCK:-$XDG_RUNTIME_DIR/ssh-agent.socket}"
 
 # editor
-if [ -x /usr/bin/emacs ]; then
+if command -v emacs > /dev/null 2>&1; then
     export EDITOR="emacsclient -nw -s $EMACS_SERVER_NAME"
 fi
 export EDITOR="${EDITOR:-nano}"
 export VISUAL="$EDITOR"
 export TEXEDIT="$EDITOR +%d %s"
+
+# cd to root
+cdr() {
+    cd "$(git rev-parse --show-toplevel)" || return
+}

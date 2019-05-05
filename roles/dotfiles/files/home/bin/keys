@@ -1,0 +1,9 @@
+#!/bin/sh
+# shellcheck disable=SC2155
+set -euo pipefail
+
+(bw update &)
+export BW_SESSION="$(bw unlock --raw)"
+
+[ $# != 0 ] || set bash
+exec "$@"
