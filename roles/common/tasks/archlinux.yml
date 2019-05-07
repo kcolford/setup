@@ -44,9 +44,9 @@
       [multilib]
       Include = /etc/pacman.d/mirrorlist
 
-      [xyne-{{ xyne_architecture|default("any") }}]
-      SigLevel = Required
-      Server = http://xyne.archlinux.ca/bin/repo.php?file=
+      #[xyne-{{ xyne_architecture|default("any") }}]
+      #SigLevel = Required
+      #Server = http://xyne.archlinux.ca/bin/repo.php?file=
 
 - name: pull down new repos
   pacman:
