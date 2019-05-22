@@ -49,6 +49,9 @@ path ~/.rvm/bin
 import ~/.rvm/scripts/rvm
 path "$(ruby -e 'puts Gem.user_dir')"/bin
 
+# jupyter
+export JUPYTERLAB_DIR="$HOME/.local/share/jupyter/lab"
+
 # default options
 alias bauerbill='bauerbill --aur'
 alias bb-wrapper='bb-wrapper --build-dir ~/.cache/bauerbill --aur'
