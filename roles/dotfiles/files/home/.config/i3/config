@@ -16,7 +16,6 @@ bar {
 
 exec --no-startup-id xset +dpms
 exec --no-startup-id screen-refresh
-exec --no-startup-id xss-lock -- light-locker-command -l
 exec --no-startup-id systemctl --user restart emacs
 exec --no-startup-id dex -a -e i3
 exec --no-startup-id compton
@@ -47,8 +46,8 @@ bindsym $mod+comma exec transset-df -a --dec 0.1
 bindsym $mod+period exec transset-df -a --inc 0.1
 
 # brightness
-bindsym XF86MonBrightnessUp exec --no-startup-id xbacklight +3
-bindsym XF86MonBrightnessDown exec --no-startup-id xbacklight -3
+bindsym XF86MonBrightnessUp exec --no-startup-id light -A 10
+bindsym XF86MonBrightnessDown exec --no-startup-id light -U 10
 
 # volume
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10%

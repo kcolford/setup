@@ -19,7 +19,6 @@
       - xorg
       - xterm
       - compton
-      - xss-lock
       - feh
       - dunst
       - scrot
@@ -31,6 +30,7 @@
       - redshift
       - python-xdg
       - xclip
+      - light
 
       - chromium
       - ttf-liberation
