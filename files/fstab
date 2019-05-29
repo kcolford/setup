@@ -1,0 +1,4 @@
+LABEL=ROOT / auto defaults 0 0
+LABEL=BOOT /boot auto defaults 0 0
+LABEL=SWAP none swap nofail 0 0
+LABEL=DATA /data auto nofail,noauto,x-systemd.automount 0 0

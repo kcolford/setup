@@ -1,0 +1,340 @@
+- name: set local hostname
+  copy:
+    dest: /etc/hostname
+    content: |
+      {{ inventory_hostname }}
+
+- name: set console keymap
+  lineinfile:
+    path: /etc/vconsole.conf
+    line: KEYMAP={{ system_keymap }}
+    regexp: ^KEYMAP
+    create: yes
+
+- name: setup system locale
+  locale_gen:
+    name: "{{ system_locale }}.{{ system_encoding }}"
+
+- name: setup fallback locale
+  locale_gen:
+    name: en_US.UTF-8
+
+- name: set locale
+  lineinfile:
+    path: /etc/locale.conf
+    line: LANG={{ system_locale }}.{{ system_encoding }}
+    regexp: ^LANG=
+    create: yes
+
+- name: set console font
+  lineinfile:
+    path: /etc/vconsole.conf
+    line: FONT=Lat2-Terminus16
+    regexp: ^FONT
+    create: yes
+
+- name: set timezone
+  file:
+    src: /usr/share/zoneinfo/{{ system_timezone }}
+    dest: /etc/localtime
+    state: link
+
+- name: install fstab
+  copy:
+    src: fstab
+    dest: /etc/
+
+- name: setup mirrorlist
+  copy:
+    dest: /etc/pacman.d/
+    src: mirrorlist
+  notify: mirrorlist update
+
+- name: automatically clean up the pacman cache
+  copy:
+    src: paccache.hook
+    dest: /etc/pacman.d/hooks/
+
+- name: initialize pacman keyring
+  command: pacman-key --init
+  args:
+    creates: /etc/pacman.d/gnupg/
+
+- name: populate with standard package keys
+  command: pacman-key --populate archlinux
+  args:
+    creates: /etc/pacman.d/gnupg/tofu.db
+
+- name: configure package repos
+  blockinfile:
+    path: /etc/pacman.conf
+    block: |
+      [multilib]
+      Include = /etc/pacman.d/mirrorlist
+
+- name: install packages
+  pacman:
+    update_cache: yes
+    upgrade: yes
+    name:
+      - intel-ucode
+      - linux-headers
+      - sudo
+      - bash-completion
+      - ccid
+      - opensc
+      - libusb-compat
+      - pkgfile
+      - thefuck
+      - udiskie
+      - lesspipe
+      - moreutils
+      - unzip
+      - unrar
+      - emacs
+      - offlineimap
+      - lastpass-cli
+      - trash-cli
+      - fzf
+      - fd
+      - ripgrep
+      - bat
+      - rustup
+      - cups
+      - ghostscript
+      - foomatic-db
+      - sane
+      - linux-zen
+      - linux-zen-headers
+      - lightdm
+      - lightdm-gtk-greeter
+      - accountsservice
+      - syncthing-gtk
+      - qbittorrent
+      - kdeconnect
+      - network-manager-applet
+      - i3-gaps
+      - i3blocks
+      - light-locker
+      - i3status
+      - perl-json-xs
+      - perl-anyevent-i3
+      - xorg
+      - xterm
+      - compton
+      - feh
+      - dunst
+      - scrot
+      - xdotool
+      - dex
+      - dmenu
+      - terminus-font
+      - arandr
+      - redshift
+      - python-xdg
+      - xclip
+      - light
+
+      - chromium
+      - ttf-liberation
+      - noto-fonts
+      - libu2f-host
+      # - profile-sync-daemon
+      # - chromium-widevine
+
+      - firefox
+      - base-devel
+      - mlocate
+      - openssh
+      - x11-ssh-askpass
+      - sshpass
+      - pacman-contrib
+      - ripgrep
+      - sshfs
+      - git
+      - hub
+      - python
+      - python-pip
+      - nodejs
+      - npm
+      - go
+      - rustup
+      - cmake
+      - clang
+      - gdb
+      # - watchman
+
+      - vagrant
+      - virtualbox
+      - docker
+      - docker-compose
+      - docker-machine
+
+      - emacs
+      - xclip
+      - shellcheck
+      - go-tools
+      - flake8
+      - autopep8
+      - yapf
+      - ipython
+      - python-jedi
+      - python-rope
+      - python-virtualenv
+      - prettier
+      # - bear
+      # - gocode-git
+      - networkmanager
+      - texlive-most
+      - libreoffice-fresh
+      - hunspell-{{ system_locale }}
+      - evince
+      - pulseaudio
+      - pulseaudio-alsa
+      - pavucontrol
+      - pamixer
+      - pasystray
+      - bluez
+      - bluez-utils
+      - blueman
+      - pulseaudio-bluetooth
+      - hunspell
+      - hunspell-{{ system_locale }}
+      - aspell
+      - aspell-en
+      - ecryptfs-utils
+
+
+- name: use openpgp driver instead of PIV-II
+  replace:
+    path: /etc/opensc.conf
+    replace: driver = "openpgp";
+    regexp: driver = "PIV-II";
+
+- name: enable smartcard service
+  service:
+    name: pcscd
+    enabled: yes
+
+- name: enable pkgfile timer for missing binaries on Archlinux
+  service:
+    name: pkgfile-update.timer
+    enabled: yes
+  when: ansible_distribution == 'Archlinux'
+
+- name: make sure configuring sudo doesn't cause everything to fail
+  block:
+    - name: configure sudo
+      copy:
+        src: sudo_config
+        dest: /etc/sudoers.d/
+        mode: 0440
+        validate: /usr/sbin/visudo -cf %s
+      become: yes
+
+    - name: create admin user
+      user:
+        name: "{{ user_name }}"
+        groups:
+          - wheel
+        update_password: on_create
+        password: "{{ user_pass|password_hash('sha512', 65534|random(seed=inventory_hostname)|string) }}"
+
+    - name: lock root account
+      user:
+        name: root
+        password_lock: yes
+
+  rescue:
+    - meta: noop
+
+- name: allow wheel group to control the printing service
+  lineinfile:
+    path: /etc/cups/cups-files.conf
+    regexp: ^SystemGroup
+    line: SystemGroup sys root wheel
+  become: yes
+
+- name: enable the printing service
+  service:
+    name: org.cups.cupsd
+    enabled: yes
+
+- name: start the printing service
+  service:
+    name: org.cups.cupsd
+    state: started
+  ignore_errors: yes
+
+- name: automatically unlock ecryptfs mount
+  pamd:
+    name: system-auth
+    type: auth
+    control: required
+    module_path: pam_unix.so
+    new_type: auth
+    new_control: required
+    new_module_path: pam_ecryptfs.so
+    module_arguments: unwrap
+    state: after
+
+- name: automatically update ecryptfs password with user password
+  pamd:
+    name: system-auth
+    type: password
+    control: required
+    module_path: pam_unix.so
+    new_type: password
+    new_control: optional
+    new_module_path: pam_ecryptfs.so
+    state: before
+
+- name: automatically mount ecryptfs
+  pamd:
+    name: system-auth
+    type: session
+    control: required
+    module_path: pam_unix.so
+    new_type: session
+    new_control: optional
+    new_module_path: pam_ecryptfs.so
+    module_arguments: unwrap
+    state: after
+
+- name: configure natural scrolling
+  copy:
+    src: '{{ item }}'
+    dest: /etc/X11/xorg.conf.d/
+  loop:
+    - 30-keyboard.conf
+    - 30-touchpad.conf
+
+- name: allow redshift to access location
+  blockinfile:
+    path: /etc/geoclue/geoclue.conf
+    block: |
+      [redshift]
+      allowed=true
+      system=false
+      users=
+  tags: redshiftgeoclue
+
+- name: enable display manager
+  service:
+    name: lightdm
+    enabled: yes
+
+- name: enable updatedb to periodically run
+  service:
+    name: updatedb.timer
+    enabled: yes
+
+- name: start network manager
+  service:
+    name: NetworkManager
+    enabled: yes
+
+- name: enable bluetooth service
+  service:
+    enabled: yes
+    name: bluetooth
