@@ -72,10 +72,13 @@
       [multilib]
       Include = /etc/pacman.d/mirrorlist
 
-- name: install packages
+- name: update system
   pacman:
     update_cache: yes
     upgrade: yes
+
+- name: install packages
+  pacman:
     name:
       - intel-ucode
       - linux-headers
