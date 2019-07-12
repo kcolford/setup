@@ -23,7 +23,7 @@
       listen: kernel update
 
     - name: remount data dir
-      command: mount -o remount /datap
+      command: mount -o remount /data
 
   tasks:
     - include_tasks: alltasks.yml
